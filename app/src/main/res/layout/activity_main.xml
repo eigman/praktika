@@ -7,17 +7,44 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:scaleX="5"
-        android:scaleY="5"
-        android:text="УЕБАНИЩЕ"
+    <Button
+        android:id="@+id/button"
+        android:layout_width="307dp"
+        android:layout_height="39dp"
+        android:text="save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/enNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Количество"
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/edGroup"
+        app:layout_constraintEnd_toEndOf="@+id/edGroup"
+        app:layout_constraintStart_toStartOf="@+id/edGroup" />
+
+    <EditText
+        android:id="@+id/edGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Номер группы"
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="@+id/button"
+        app:layout_constraintStart_toStartOf="@+id/button" />
+
+    <TextView
+        android:id="@+id/tvList"
+        android:layout_width="397dp"
+        android:layout_height="439dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/enNumber"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="9dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
