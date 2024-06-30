@@ -8,33 +8,43 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/student"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="16dp"
-        android:text="Список"
+        android:id="@+id/button"
+        android:layout_width="307dp"
+        android:layout_height="39dp"
+        android:text="save"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/schedule"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="Расписание"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/student"
-        app:layout_constraintHorizontal_bias="0.488"
-        app:layout_constraintStart_toEndOf="@+id/group" />
-
-    <Button
-        android:id="@+id/group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginBottom="16dp"
-        android:text="Группа"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/enNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Количество"
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/edGroup"
+        app:layout_constraintEnd_toEndOf="@+id/edGroup"
+        app:layout_constraintStart_toStartOf="@+id/edGroup" />
+
+    <EditText
+        android:id="@+id/edGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Номер группы"
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="@+id/button"
+        app:layout_constraintStart_toStartOf="@+id/button" />
+
+    <TextView
+        android:id="@+id/tvList"
+        android:layout_width="397dp"
+        android:layout_height="439dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/enNumber"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="9dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
