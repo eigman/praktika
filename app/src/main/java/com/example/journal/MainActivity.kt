@@ -19,19 +19,14 @@ class MainActivity : ComponentActivity() {
         setContentView(binding.root)
         val db = mainDb.getDb(this)
         binding.button.setOnClickListener {
-            val group = group(null,
-                binding.enNumber.text.toString(),
+            val group = group(
+                binding.enNumber.text.toString().toInt(),
                 binding.edGroup.text.toString()
                 )
             Thread {
                 db.getDao().insertGroup(group)
             }.start()
 
-
         }
-
-
     }
-
-
 }
