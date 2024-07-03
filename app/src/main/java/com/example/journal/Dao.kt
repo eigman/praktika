@@ -22,4 +22,7 @@ interface Dao {
     fun insertStudent(item: students)
     @Query ("SELECT * FROM STUDENTS GROUP BY SURNAME")
     fun getStudents(): Flow<List<students>>
+
+    @Query ("SELECT GROUP_NUMBER FROM GROUPS")
+    fun getGroupNumber(): Int
 }

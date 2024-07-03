@@ -23,7 +23,7 @@ class AddGroupActivity : AppCompatActivity() {
         binding.addGroup.setOnClickListener{
             val dialogView = layoutInflater.inflate(R.layout.dialog_add_group, null)
             val editTextGroupNumber = dialogView.findViewById<EditText>(R.id.groupNumber)
-            val editTextNumberOfPeople = dialogView.findViewById<EditText>(R.id.amountStudents)
+            val editTextAmountOfStudents = dialogView.findViewById<EditText>(R.id.amountStudents)
 
             builder.setView(dialogView)
                 .setTitle("Добавьте группу")
@@ -31,7 +31,7 @@ class AddGroupActivity : AppCompatActivity() {
                 .setPositiveButton("Yes") { dialogInterface, it ->
 
                     val groupNumber = editTextGroupNumber.text.toString().toInt()
-                    val numberOfPeople = editTextNumberOfPeople.text.toString()
+                    val numberOfPeople = editTextAmountOfStudents.text.toString()
 
                     val group = group(groupNumber, numberOfPeople)
                     Thread {

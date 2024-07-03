@@ -52,7 +52,7 @@ abstract class mainDb : RoomDatabase() {
                         `GROUP_NUMBER` INTEGER NOT NULL,
                         `NAME` TEXT NOT NULL,
                         `SURNAME` TEXT NOT NULL,
-                        `PATRONYMIC` TEXT NOT NULL,
+                        `PATRONYMIC` TEXT,
                         CONSTRAINT GROUP_STUDENT
                         FOREIGN KEY(`GROUP_NUMBER`) REFERENCES `GROUPS`(`GROUP_NUMBER`)
                     )
