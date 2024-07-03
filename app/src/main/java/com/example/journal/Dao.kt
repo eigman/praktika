@@ -17,4 +17,9 @@ interface Dao {
     fun insertTeacher(item: teachers)
     @Query ("SELECT * FROM TEACHERS")
     fun getAllTeachers(): Flow<List<teachers>>
+
+    @Insert
+    fun insertStudent(item: students)
+    @Query ("SELECT * FROM STUDENTS GROUP BY SURNAME")
+    fun getStudents(): Flow<List<students>>
 }

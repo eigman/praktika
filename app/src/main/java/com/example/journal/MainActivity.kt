@@ -1,6 +1,8 @@
 package com.example.journal
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import androidx.activity.ComponentActivity
 import com.example.journal.databinding.ActivityMainBinding
 
@@ -28,5 +30,13 @@ class MainActivity : ComponentActivity() {
             }.start()
 
         }
+
+        binding.button2.setOnClickListener {
+            val intent = Intent(this, AddGroupActivity::class.java)
+            startActivity(intent)
+        }
+
     }
+
+
 }
