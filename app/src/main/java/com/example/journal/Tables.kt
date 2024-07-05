@@ -108,9 +108,9 @@ data class teachers(
 
 data class teacher_discipline(
     @ColumnInfo(name = "ID_TEACHER")
-    val ID_TEACHER: Int,
+    var ID_TEACHER: Int,
     @ColumnInfo(name = "ID_DISCIPLINE")
-    val ID_DISCIPLINE: Int
+    var ID_DISCIPLINE: Int
 )
 
 @Entity (
@@ -131,6 +131,10 @@ data class teacher_discipline(
 )
 
 data class attendance(
+    @ColumnInfo(name = "ID_STUDENT")
+    var ID_STUDENT: Int,
+    @ColumnInfo(name = "ID_PAIR")
+    var ID_PAIR: Int,
     @ColumnInfo(name = "Y/N")
-    val YESORNO: Int
+    var YESORNO: Int
 )
