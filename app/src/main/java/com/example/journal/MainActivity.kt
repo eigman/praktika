@@ -1,36 +1,47 @@
 package com.example.journal
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import androidx.activity.ComponentActivity
-import com.example.journal.databinding.ActivityMainBinding
-
-import kotlin.concurrent.thread
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.journal.ui.theme.JournalTheme
 
 class MainActivity : ComponentActivity() {
-
-    lateinit var binding: ActivityMainBinding
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
-
-
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        binding.button2.setOnClickListener {
-            val intent = Intent(this, AddGroupActivity::class.java)
-            startActivity(intent)
+        enableEdgeToEdge()
+        setContent {
+            JournalTheme {
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    Greeting(
+                        name = "Android",
+                        modifier = Modifier.padding(innerPadding)
+                    )
+                }
+            }
         }
-
-        binding.button4.setOnClickListener {
-            val intent = Intent(this, ListStudentsActivity::class.java)
-            startActivity(intent)
-        }
-
     }
+}
 
+@Composable
+fun Greeting(name: String, modifier: Modifier = Modifier) {
+    Text(
+        text = "Hello $name!",
+        modifier = modifier
+    )
+}
 
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    JournalTheme {
+        Greeting("Android")
+    }
 }
