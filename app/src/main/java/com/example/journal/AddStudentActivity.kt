@@ -7,6 +7,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.asLiveData
 import com.example.journal.databinding.ActivityAddGroupBinding
 import com.example.journal.databinding.AddStudentBinding
 
@@ -16,6 +17,17 @@ class AddStudentActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val db = MainDb.getDb(this)
+        db.getDao().selectStudents().asLiveData().observe(this) { list ->
+            binding.textView2.text = ""
+            list.forEach {
+                val text = "id: ${it.ID_STUDENT}, " +
+                        "group: ${it.GROUP_NUMBER}, " +
+                        "surname: ${it.SURNAME}, " +
+                        "name: ${it.NAME}, " +
+                        "patronymic: ${it.PATRONYMIC}\n"
+                binding.textView2.append(text)
+            }
+        }
         binding = AddStudentBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -32,12 +44,13 @@ class AddStudentActivity : AppCompatActivity() {
                 .setCancelable(true)
                 .setPositiveButton("Yes") { dialogInterface, it ->
 
-                    val surnameStudent = editTextSurnameStudent.text.toString()
-                    val nameStudent = editTextNameStudent.text.toString()
-                    val patronymicStudent = editTextPatronymicStudent.text.toString()
-                    val groupNumber = 1241
-                    val student = Student(null, groupNumber, surnameStudent, nameStudent, patronymicStudent)
+
                     Thread {
+                        val surnameStudent = editTextSurnameStudent.text.toString()
+                        val nameStudent = editTextNameStudent.text.toString()
+                        val patronymicStudent = editTextPatronymicStudent.text.toString()
+                        val groupNumber = db.getDao().selectGroupNumber()
+                        val student = Student(null, groupNumber, nameStudent, surnameStudent, patronymicStudent)
                         db.getDao().insertStudent(student)
                     }.start()
 
