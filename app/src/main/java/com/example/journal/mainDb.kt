@@ -10,22 +10,23 @@ import androidx.room.RoomDatabase
 
 @Database
     (entities =
-    [group::class,
-    students::class,
-    disciplines::class,
-    attendance::class,
-    schedule::class],
-    version = 1)
+    [Group::class,
+    Student::class,
+    Discipline::class,
+    Attendance::class,
+    Schedule::class],
+    version = 1,exportSchema = false)
 
 
-abstract class mainDb : RoomDatabase() {
-    abstract fun getDao(): Dao
+abstract class MainDb : RoomDatabase() {
+    abstract fun getDao(): DeviceDao
     companion object{
-        fun getDb(context: Context): mainDb{
+
+        fun getDb(context: Context): MainDb{
             return Room.databaseBuilder(
                 context.applicationContext,
-                mainDb::class.java,
-                "journal.db"
+                MainDb::class.java,
+                "journal2.db"
             ).build()
         }
     }

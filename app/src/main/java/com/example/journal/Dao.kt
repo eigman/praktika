@@ -6,10 +6,7 @@ import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-
-interface Dao {
+interface DeviceDao{
     @Insert
-    fun insertGroup(item: group)
-    @Query("SELECT * FROM GROUPS")
-    fun getAllGroup(): Flow<List<group>>
+    fun insertGroup(item: Group)
 }

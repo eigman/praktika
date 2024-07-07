@@ -4,30 +4,32 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.ForeignKey
+import androidx.room.Index
 
-@Entity (tableName = "GROUPS")
-
-data class group(
+@Entity(
+    tableName = "GROUPS"
+)
+data class Group(
     @PrimaryKey
-    var GROUP_NUMBER: Int,
+    val GROUP_NUMBER: Int,
     @ColumnInfo(name = "AMOUNT_STUDENTS")
-    var AMOUNT_STUDENTS: String
+    var AMOUNT_STUDENTS: Int
 )
 
 @Entity(
     tableName = "STUDENTS",
     foreignKeys = [ForeignKey(
-        entity = group::class,
+        entity = Group::class,
         parentColumns = ["GROUP_NUMBER"],
         childColumns = ["GROUP_NUMBER"]
-    )]
+    )],
+    indices = [Index(value = ["GROUP_NUMBER"])]
 )
-
-data class students(
-    @PrimaryKey (autoGenerate = true)
-    var ID_STUDENT: Int? = null,
+data class Student(
+    @PrimaryKey(autoGenerate = true)
+    val ID_STUDENT: Int? = null,
     @ColumnInfo(name = "GROUP_NUMBER")
-    var GROUP_NUMBER: Int,
+    val GROUP_NUMBER: Int,
     @ColumnInfo(name = "NAME")
     var NAME: String,
     @ColumnInfo(name = "SURNAME")
@@ -36,31 +38,33 @@ data class students(
     var PATRONYMIC: String
 )
 
-@Entity
-
-data class disciplines(
-    @PrimaryKey (autoGenerate = true)
-    var ID_DISCIPLINE: Int? = null,
+@Entity(
+    tableName = "DISCIPLINES",
+    indices = [Index(value = ["GROUP_NUMBER"])]
+)
+data class Discipline(
+    @PrimaryKey(autoGenerate = true)
+    val ID_DISCIPLINE: Int? = null,
     @ColumnInfo(name = "NAME")
     var NAME: String,
     @ColumnInfo(name = "GROUP_NUMBER")
-    var GROUP_NUMBER: Int,
+    val GROUP_NUMBER: Int
 )
 
 @Entity(
     tableName = "SCHEDULE",
     foreignKeys = [ForeignKey(
-        entity = disciplines::class,
+        entity = Discipline::class,
         parentColumns = ["ID_DISCIPLINE"],
         childColumns = ["ID_DISCIPLINE"]
-    )]
+    )],
+    indices = [Index(value = ["ID_DISCIPLINE"])]
 )
-
-data class schedule(
-    @PrimaryKey (autoGenerate = true)
-    var ID_PAIR: Int? = null,
+data class Schedule(
+    @PrimaryKey(autoGenerate = true)
+    val ID_PAIR: Int? = null,
     @ColumnInfo(name = "ID_DISCIPLINE")
-    var ID_DISCIPLINE: Int,
+    val ID_DISCIPLINE: Int,
     @ColumnInfo(name = "DATE_PAIR")
     var DATE_PAIR: String,
     @ColumnInfo(name = "TIME_PAIR")
@@ -69,28 +73,28 @@ data class schedule(
     var TYPE: String
 )
 
-@Entity (
+@Entity(
     tableName = "ATTENDANCE",
     primaryKeys = ["ID_STUDENT", "ID_PAIR"],
     foreignKeys = [
         ForeignKey(
-            entity = schedule::class,
+            entity = Schedule::class,
             parentColumns = ["ID_PAIR"],
             childColumns = ["ID_PAIR"]
         ),
         ForeignKey(
-            entity = students::class,
+            entity = Student::class,
             parentColumns = ["ID_STUDENT"],
             childColumns = ["ID_STUDENT"]
         )
-    ]
+    ],
+    indices = [Index(value = ["ID_PAIR"]), Index(value = ["ID_STUDENT"])]
 )
-
-data class attendance(
+data class Attendance(
     @ColumnInfo(name = "ID_STUDENT")
-    var ID_STUDENT: Int,
+    val ID_STUDENT: Int,
     @ColumnInfo(name = "ID_PAIR")
-    var ID_PAIR: Int,
+    val ID_PAIR: Int,
     @ColumnInfo(name = "Y/N")
     var YESORNO: Int
 )
