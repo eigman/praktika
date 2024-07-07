@@ -1,6 +1,7 @@
 package com.example.journal
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
@@ -22,4 +23,7 @@ interface DeviceDao{
 
     @Query ("DELETE FROM GROUPS")
     fun deleteAllGroup()
+
+    @Delete
+    fun deleteStudent(student: Student)
 }

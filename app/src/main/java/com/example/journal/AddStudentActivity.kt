@@ -34,6 +34,16 @@ class AddStudentActivity : AppCompatActivity() {
             studentAdapter.updateList(list)
         }
 
+        studentAdapter.setOnItemClickListener(object : StudentAdapter.OnItemClickListener {
+            override fun onDeleteClick(position: Int) {
+                val studentToDelete = studentAdapter.getItem(position)
+                // Ваш код для удаления студента из базы данных
+                Thread {
+                    db.getDao().deleteStudent(studentToDelete)
+                }.start()
+            }
+        })
+
         builder = AlertDialog.Builder(this)
 
         binding.addStudent.setOnClickListener{

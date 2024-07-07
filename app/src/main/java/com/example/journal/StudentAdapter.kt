@@ -8,6 +8,18 @@ import androidx.recyclerview.widget.RecyclerView
 
 class StudentAdapter(private var students: List<Student>) : RecyclerView.Adapter<StudentAdapter.StudentViewHolder>() {
 
+    private lateinit var listener: OnItemClickListener
+
+    interface OnItemClickListener {
+        fun onDeleteClick(position: Int)
+    }
+
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        this.listener = listener
+    }
+
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_student, parent, false)
         return StudentViewHolder(view)
@@ -16,6 +28,11 @@ class StudentAdapter(private var students: List<Student>) : RecyclerView.Adapter
     override fun onBindViewHolder(holder: StudentViewHolder, position: Int) {
         val student = students[position]
         holder.bind(position + 1, student)
+
+        // Обработчик клика на кнопку удаления
+        holder.itemView.findViewById<View>(R.id.deleteItemStudent).setOnClickListener {
+            listener.onDeleteClick(position)
+        }
     }
 
     override fun getItemCount(): Int = students.size
@@ -41,5 +58,8 @@ class StudentAdapter(private var students: List<Student>) : RecyclerView.Adapter
         }
     }
 
+    fun getItem(position: Int): Student {
+        return students[position]
+    }
 
 }
