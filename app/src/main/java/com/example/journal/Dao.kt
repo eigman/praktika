@@ -9,4 +9,11 @@ import kotlinx.coroutines.flow.Flow
 interface DeviceDao{
     @Insert
     fun insertGroup(item: Group)
+
+    @Query ("SELECT GROUP_NUMBER FROM GROUPS LIMIT 1")
+    fun selectGroupNumber(): Int?
+
+
+    @Insert
+    fun insertStudent(item: Student)
 }

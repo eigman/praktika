@@ -22,6 +22,10 @@ class MainActivity : ComponentActivity() {
             val intent = Intent(this, AddGroupActivity::class.java)
             startActivity(intent)
         }
+        binding.student.setOnClickListener {
+            val intent = Intent(this, AddStudentActivity::class.java)
+            startActivity(intent)
+        }
 
 
     }
