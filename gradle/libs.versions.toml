@@ -19,6 +19,7 @@ legacySupportV4 = "1.0.0"
 
 
 [libraries]
+androidx-lifecycle-livedata = "androidx.lifecycle:lifecycle-livedata-core-ktx:2.8.3"
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 androidx-room-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
