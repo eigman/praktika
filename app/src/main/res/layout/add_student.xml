@@ -11,7 +11,21 @@
         android:id="@+id/addStudent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="112dp"
         android:text="+Студент"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="112dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/addStudent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
