@@ -19,21 +19,41 @@ class AddGroupActivity : AppCompatActivity() {
     private lateinit var builder: AlertDialog.Builder
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val db = MainDb.getDb(this)
         binding = ActivityAddGroupBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val db = MainDb.getDb(this)
-        CoroutineScope(Dispatchers.IO).launch {
-            db.getDao().insertGroup(Group(2, 2))
+        builder = AlertDialog.Builder(this)
 
+        binding.addGroup.setOnClickListener{
+            val dialogView = layoutInflater.inflate(R.layout.dialog_add_group, null)
+            val editTextGroupNumber = dialogView.findViewById<EditText>(R.id.groupNumber1)
+            val editTextAmountOfStudents = dialogView.findViewById<EditText>(R.id.amountStudents)
+
+            builder.setView(dialogView)
+                .setTitle("Добавьте группу")
+                .setCancelable(true)
+                .setPositiveButton("Yes") { dialogInterface, it ->
+
+                    val groupNumber = editTextGroupNumber.text.toString().toInt()
+                    val numberOfPeople = editTextAmountOfStudents.text.toString().toInt()
+
+                    val group = Group(groupNumber, numberOfPeople)
+                    Thread {
+                        db.getDao().insertGroup(group)
+                    }.start()
+
+                    dialogInterface.dismiss()
+                }
+                .setNegativeButton("No") { dialogInterface, it ->
+                    dialogInterface.cancel()
+                }
+                .show()
         }
+
         binding.button3.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-            val groupNumber = binding.groupNumber1.text.toString().toInt()
-            val numberOfPeople = binding.amountStudents1.text.toString().toInt()
-
-            Log.d("XUI", "$groupNumber, $numberOfPeople")
         }
     }
 }
