@@ -1,21 +1,34 @@
 package com.example.journal
 
 import android.content.Context
+import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database (entities = [group::class], version = 1)
 
-abstract class mainDb : RoomDatabase() {
-    abstract fun getDao(): Dao
+
+@Database
+    (entities =
+    [Group::class,
+    Student::class,
+    Discipline::class,
+    Attendance::class,
+    Schedule::class],
+    version = 1,exportSchema = false)
+
+
+abstract class MainDb : RoomDatabase() {
+    abstract fun getDao(): DeviceDao
     companion object{
-        fun getDb(context: Context): mainDb{
+
+        fun getDb(context: Context): MainDb{
             return Room.databaseBuilder(
                 context.applicationContext,
-                mainDb::class.java,
-                "journal.db"
+                MainDb::class.java,
+                "journal2.db"
             ).build()
         }
     }
 }
+
