@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textViewDiscipline"
+        android:id="@+id/textViewStudent"
         android:layout_width="232dp"
         android:layout_height="21dp"
         android:text="Фамилия Имя"
