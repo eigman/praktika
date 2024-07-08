@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.asLiveData
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.journal.databinding.ActivityAddGroupBinding
 import com.example.journal.databinding.AddStudentBinding
 
@@ -17,19 +18,31 @@ class AddStudentActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val db = MainDb.getDb(this)
-        db.getDao().selectStudents().asLiveData().observe(this) { list ->
-            binding.textView2.text = ""
-            list.forEach {
-                val text = "id: ${it.ID_STUDENT}, " +
-                        "group: ${it.GROUP_NUMBER}, " +
-                        "surname: ${it.SURNAME}, " +
-                        "name: ${it.NAME}, " +
-                        "patronymic: ${it.PATRONYMIC}\n"
-                binding.textView2.append(text)
-            }
-        }
+
+
         binding = AddStudentBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val studentAdapter = StudentAdapter(emptyList())
+        binding.recyclerViewStudents.apply {
+            layoutManager = LinearLayoutManager(this@AddStudentActivity)
+            adapter = studentAdapter
+        }
+
+        // Установка наблюдателя
+        db.getDao().selectStudents().asLiveData().observe(this) { list ->
+            studentAdapter.updateList(list)
+        }
+
+        studentAdapter.setOnItemClickListener(object : StudentAdapter.OnItemClickListener {
+            override fun onDeleteClick(position: Int) {
+                val studentToDelete = studentAdapter.getItem(position)
+                // Ваш код для удаления студента из базы данных
+                Thread {
+                    db.getDao().deleteStudent(studentToDelete)
+                }.start()
+            }
+        })
 
         builder = AlertDialog.Builder(this)
 
