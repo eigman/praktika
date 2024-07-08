@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class StudentAdapterStats(private var students: List<StudentWithAttendance>) : RecyclerView.Adapter<StudentAdapterStats.StudentViewHolderStats>() {
+class StudentAdapterStats (private var students: List<Student>) : RecyclerView.Adapter<StudentAdapterStats.StudentViewHolderStats>() {
 
     private lateinit var listener: OnItemClickListener
 
@@ -18,32 +18,41 @@ class StudentAdapterStats(private var students: List<StudentWithAttendance>) : R
         this.listener = listener
     }
 
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentViewHolderStats {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.student_item_stats, parent, false)
         return StudentViewHolderStats(view)
     }
 
+
     override fun onBindViewHolder(holder: StudentViewHolderStats, position: Int) {
-        val studentWithAttendance = students[position]
-        holder.bind(position + 1, studentWithAttendance)
+        val student = students[position]
+        holder.bind(position + 1, student)
     }
 
     override fun getItemCount(): Int = students.size
 
-    fun updateList(newStudents: List<StudentWithAttendance>) {
+    fun updateList(newStudents: List<Student>) {
         students = newStudents
         notifyDataSetChanged()
     }
 
+
     class StudentViewHolderStats(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val textViewIndexStats: TextView = itemView.findViewById(R.id.textViewIndexStats)
         private val textViewStudentStats: TextView = itemView.findViewById(R.id.textViewStudentStats)
-        private val textViewAttendanceStats: TextView = itemView.findViewById(R.id.textViewAttendanceStats)
 
-        fun bind(index: Int, studentWithAttendance: StudentWithAttendance) {
+        fun bind(index: Int, student: Student) {
             textViewIndexStats.text = index.toString()
-            textViewStudentStats.text = ". ${studentWithAttendance.student.SURNAME} ${studentWithAttendance.student.NAME} ${studentWithAttendance.student.PATRONYMIC}"
-            textViewAttendanceStats.text = studentWithAttendance.attendanceCount.toString()
+            textViewStudentStats.text = ". ${student.SURNAME} ${student.NAME} ${student.PATRONYMIC}"
         }
     }
+
+    fun getItem(position: Int): Student {
+        return students[position]
+    }
+
+
+
 }
