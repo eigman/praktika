@@ -49,11 +49,13 @@ class MainActivity : ComponentActivity() {
             adapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             editSpinnerNumber.adapter = adapterNumber
 
-            /*val disciplineNames = db.getDao().getAllDisciplineNames()
-            val editSpinnerDiscipline: Spinner = dialogView.findViewById(R.id.spinnerDiscipline)
-            val adapterDiscipline = ArrayAdapter(this, android.R.layout.simple_spinner_item, disciplineNames)
-            adapterDiscipline.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            editSpinnerDiscipline.adapter = adapterDiscipline*/
+            /*val editSpinnerDiscipline: Spinner = dialogView.findViewById(R.id.spinnerDiscipline)
+            Thread{
+                val disciplineNames = db.getDao().selectAllDisciplineNames()
+                val adapterDiscipline = ArrayAdapter(this, android.R.layout.simple_spinner_item, disciplineNames)
+                adapterDiscipline.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                editSpinnerDiscipline.adapter = adapterDiscipline
+            }.start()*/
 
             builder.setView(dialogView)
                 .setTitle("Добавьте расписание")
@@ -64,8 +66,8 @@ class MainActivity : ComponentActivity() {
                         val typeOfPair = editSpinnerType.selectedItem.toString()
                         val numberOfPair = editSpinnerNumber.selectedItem.toString()
                         val pairDate = editTextPairDate.text.toString()
-                        //val discipline =
-                        val schedule = Schedule(null, 5454, pairDate, numberOfPair, typeOfPair)
+                        //val discipline = editSpinnerDiscipline.selectedItem.toString().toInt()
+                        val schedule = Schedule(null, 5253, pairDate, numberOfPair, typeOfPair)
                         db.getDao().insertSchedule(schedule)
                     }.start()
 

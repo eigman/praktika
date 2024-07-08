@@ -26,10 +26,10 @@ interface DeviceDao{
 
     @Query ("SELECT * FROM DISCIPLINES")
     fun selectDisciplines(): Flow<List<Discipline>>
+    @Query ("SELECT NAME FROM DISCIPLINES")
+    fun selectAllDisciplineNames(): List<String>
     @Delete
     fun deleteDiscipline(discipline: Discipline)
-    @Query("SELECT NAME FROM DISCIPLINES")
-    fun getAllDisciplineNames(): List<String>
     @Insert
     fun insertDiscipline(item: Discipline)
 
