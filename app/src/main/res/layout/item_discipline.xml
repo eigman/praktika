@@ -20,15 +20,15 @@
         android:id="@+id/textViewDiscipline"
         android:layout_width="232dp"
         android:layout_height="21dp"
-        android:text="Фамилия Имя"
+        android:text="Название дисциплины"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/deleteItemStudent"
+        app:layout_constraintEnd_toStartOf="@+id/deleteItemDiscipline"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/textViewIndex"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/deleteItemStudent"
+        android:id="@+id/deleteItemDiscipline"
         android:layout_width="35dp"
         android:layout_height="42dp"
         android:text="x"

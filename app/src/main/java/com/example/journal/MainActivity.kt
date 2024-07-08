@@ -26,6 +26,10 @@ class MainActivity : ComponentActivity() {
             val intent = Intent(this, AddStudentActivity::class.java)
             startActivity(intent)
         }
+        binding.disciplines.setOnClickListener {
+            val intent = Intent(this, AddDisciplinesActivity::class.java)
+            startActivity(intent)
+        }
 
 
     }

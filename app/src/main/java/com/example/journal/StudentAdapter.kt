@@ -50,7 +50,7 @@ class StudentAdapter(private var students: List<Student>) : RecyclerView.Adapter
 
     class StudentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val textViewIndex: TextView = itemView.findViewById(R.id.textViewIndex)
-        private val textViewStudent: TextView = itemView.findViewById(R.id.textViewStudent)
+        private val textViewStudent: TextView = itemView.findViewById(R.id.textViewDiscipline)
 
         fun bind(index: Int, student: Student) {
             textViewIndex.text = index.toString()
