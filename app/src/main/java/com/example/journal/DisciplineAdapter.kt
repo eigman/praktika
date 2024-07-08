@@ -40,8 +40,7 @@ class DisciplineAdapter(private var disciplines: List<Discipline>) : RecyclerVie
         notifyDataSetChanged()
     }
 
-    fun deleteStudent(position: Int) {
-        // Удаляем студента из списка по позиции
+    fun deleteDiscipline(position: Int) {
         disciplines = disciplines.filterIndexed { index, _ -> index != position }
         notifyDataSetChanged()
     }
