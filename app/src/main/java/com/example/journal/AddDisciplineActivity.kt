@@ -1,5 +1,6 @@
 package com.example.journal
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -20,6 +21,7 @@ class AddDisciplineActivity : AppCompatActivity() {
     lateinit var binding: ActivityAddDisciplineBinding
     private lateinit var builder: AlertDialog.Builder
 
+    @SuppressLint("SuspiciousIndentation", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         val db = MainDb.getDb(this)
         super.onCreate(savedInstanceState)
@@ -30,7 +32,7 @@ class AddDisciplineActivity : AppCompatActivity() {
         builder = AlertDialog.Builder(this)
             binding.addDiscipline.setOnClickListener{
                 val dialogView = layoutInflater.inflate(R.layout.dialog_add_discipline, null)
-                val editTextDisciplineName = dialogView.findViewById<EditText>(R.id.disciplineName)
+                val editTextDisciplineName = dialogView.findViewById<EditText>(R.id.addDiscipline)
 
                 builder.setView(dialogView)
                     .setTitle("Добавьте дисциплину")

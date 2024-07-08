@@ -33,6 +33,17 @@ interface DeviceDao{
     @Insert
     fun insertDiscipline(item: Discipline)
 
+    @Query("""
+        SELECT s.*, COUNT(a.ID_PAIR) AS attendanceCount 
+        FROM STUDENTS s 
+        LEFT JOIN ATTENDANCE a ON s.ID_STUDENT = a.ID_STUDENT 
+        LEFT JOIN SCHEDULE sc ON a.ID_PAIR = sc.ID_PAIR 
+        LEFT JOIN DISCIPLINES d ON sc.ID_DISCIPLINE = d.ID_DISCIPLINE 
+        WHERE d.NAME = :disciplineName 
+        GROUP BY s.ID_STUDENT
+    """)
+    fun getAttendanceForDiscipline(disciplineName: String): Flow<List<StudentWithAttendance>>
+
     @Insert
     fun insertSchedule(item: Schedule)
 }

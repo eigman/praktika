@@ -8,6 +8,7 @@ import android.widget.Spinner
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
 import com.example.journal.databinding.ActivityMainBinding
+import com.example.journal.databinding.ActivityStatsBinding
 
 import kotlin.concurrent.thread
 
@@ -33,6 +34,10 @@ class MainActivity : ComponentActivity() {
         }
         binding.disciplines.setOnClickListener {
             val intent = Intent(this, AddDisciplinesActivity::class.java)
+            startActivity(intent)
+        }
+        binding.stats.setOnClickListener {
+            val intent = Intent(this, Stats::class.java)
             startActivity(intent)
         }
         binding.addSchedule.setOnClickListener {

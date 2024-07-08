@@ -71,4 +71,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <Button
+        android:id="@+id/stats"
+        android:layout_width="122dp"
+        android:layout_height="43dp"
+        android:layout_marginBottom="12dp"
+        android:text="Статистика"
+        app:layout_constraintBottom_toTopOf="@+id/schedule"
+        app:layout_constraintEnd_toStartOf="@+id/disciplines"
+        app:layout_constraintHorizontal_bias="0.888"
+        app:layout_constraintStart_toEndOf="@+id/student" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
