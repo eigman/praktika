@@ -54,7 +54,9 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.lifecycle.livedata)
+    implementation(libs.androidx.lifecycle.extensions)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation (libs.androidx.runtime.livedata)
