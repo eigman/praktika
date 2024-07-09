@@ -11,6 +11,10 @@ import androidx.lifecycle.LiveData
 interface DeviceDao{
     @Insert
     fun insertGroup(item: Group)
+
+    @Insert
+    fun insertAttendance(item: Attendance)
+
     @Query ("SELECT GROUP_NUMBER FROM GROUPS LIMIT 1")
     fun selectGroupNumber(): Int
     @Query ("SELECT * FROM GROUPS")

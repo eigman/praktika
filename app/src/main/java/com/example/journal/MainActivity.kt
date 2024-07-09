@@ -1,5 +1,6 @@
 package com.example.journal
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.EditText
@@ -8,8 +9,8 @@ import android.widget.Spinner
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
-import com.example.journal.databinding.ActivityMainBinding
 import androidx.lifecycle.ViewModelProvider
+import com.example.journal.databinding.ActivityMainBinding
 
 import kotlin.concurrent.thread
 
@@ -19,6 +20,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var builder: AlertDialog.Builder
     private lateinit var scheduleViewModel: ScheduleViewModel
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val typesOfPair = arrayOf("Л", "ПР", "ЛЕК")
@@ -41,6 +43,10 @@ class MainActivity : ComponentActivity() {
 
         binding.disciplines.setOnClickListener {
             val intent = Intent(this, AddDisciplinesActivity::class.java)
+            startActivity(intent)
+        }
+        binding.stats.setOnClickListener {
+            val intent = Intent(this, Stats::class.java)
             startActivity(intent)
         }
 
@@ -84,6 +90,34 @@ class MainActivity : ComponentActivity() {
                     dialogInterface.dismiss()
                 }
                 .setNegativeButton("Отмена") { dialogInterface, it ->
+                    dialogInterface.cancel()
+                }
+                .show()
+        }
+        val db = MainDb.getDb(this)
+        binding.button5.setOnClickListener{
+            val dialogView = layoutInflater.inflate(R.layout.dialog_add_at, null)
+            val editTextGroupNumber = dialogView.findViewById<EditText>(R.id.id_pair)
+            val editTextAmountOfStudents = dialogView.findViewById<EditText>(R.id.id_student)
+            val editTextYN = dialogView.findViewById<EditText>(R.id.YN)
+
+            builder.setView(dialogView)
+                .setTitle("Добавьте посещение")
+                .setCancelable(true)
+                .setPositiveButton("Yes") { dialogInterface, it ->
+
+                    val groupNumber = editTextGroupNumber.text.toString().toInt()
+                    val numberOfPeople = editTextAmountOfStudents.text.toString().toInt()
+                    val YN = editTextYN.text.toString().toInt()
+
+                    val group = Attendance(groupNumber, numberOfPeople, YN)
+                    Thread {
+                        db.getDao().insertAttendance(group)
+                    }.start()
+
+                    dialogInterface.dismiss()
+                }
+                .setNegativeButton("No") { dialogInterface, it ->
                     dialogInterface.cancel()
                 }
                 .show()
