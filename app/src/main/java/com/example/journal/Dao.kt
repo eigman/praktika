@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
+import androidx.lifecycle.LiveData
 
 @Dao
 interface DeviceDao{
@@ -26,12 +27,14 @@ interface DeviceDao{
 
     @Query ("SELECT * FROM DISCIPLINES")
     fun selectDisciplines(): Flow<List<Discipline>>
-    @Query ("SELECT NAME FROM DISCIPLINES")
-    fun selectAllDisciplineNames(): List<String>
     @Delete
     fun deleteDiscipline(discipline: Discipline)
     @Insert
     fun insertDiscipline(item: Discipline)
+    @Query("SELECT ID_DISCIPLINE FROM DISCIPLINES WHERE NAME = :name")
+    suspend fun getDisciplineIdByName(name: String): Int
+    @Query("SELECT NAME FROM DISCIPLINES")
+    fun selectAllDisciplineNames(): LiveData<List<String>>
 
     @Insert
     fun insertSchedule(item: Schedule)
