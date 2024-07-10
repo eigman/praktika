@@ -1,5 +1,6 @@
 package com.example.journal
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
@@ -75,6 +76,9 @@ class AddStudentActivity : AppCompatActivity() {
                 .show()
         }
 
-
+        binding.editStudent.setOnClickListener {
+            val intent = Intent(this, ListStudentActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
