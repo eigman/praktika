@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
         }
 
         binding.disciplines.setOnClickListener {
-            val intent = Intent(this, AddDisciplinesActivity::class.java)
+            val intent = Intent(this, DisciplinesActivity::class.java)
             startActivity(intent)
         }
 
