@@ -58,16 +58,11 @@ class Stats : AppCompatActivity() {
     private fun updateAttendanceData(discipline: String) {
         lifecycleScope.launch {
             val attendanceMap = mutableMapOf<Int, Int>()
-            val totalPairsMap = mutableMapOf<Int, Int>() // Новый мап для общего количества пар
 
             if (discipline == "Все") {
                 val attendances = db.getDao().selectAllAttendance()
                 attendances.forEach {
                     attendanceMap[it.ID_STUDENT] = attendanceMap.getOrDefault(it.ID_STUDENT, 0) + it.YESORNO
-                }
-                val schedules = db.getDao().selectAllSchedule()
-                schedules.forEach {
-                    totalPairsMap[it.ID_DISCIPLINE] = totalPairsMap.getOrDefault(it.ID_DISCIPLINE, 0) + 1
                 }
             } else {
                 val disciplineId = db.getDao().getDisciplineIdByName(discipline)
@@ -75,22 +70,17 @@ class Stats : AppCompatActivity() {
                 attendances.forEach {
                     attendanceMap[it.ID_STUDENT] = attendanceMap.getOrDefault(it.ID_STUDENT, 0) + it.YESORNO
                 }
-                val schedules = db.getDao().selectScheduleByDiscipline(disciplineId)
-                totalPairsMap[disciplineId] = schedules.size
             }
 
             db.getDao().selectStudents().asLiveData().observe(this@Stats) { list ->
-                studentAdapterStats.updateList(list, attendanceMap, totalPairsMap, discipline)
+                studentAdapterStats.updateList(list, attendanceMap)
             }
         }
     }
 
     private fun observeStudents() {
         db.getDao().selectStudents().asLiveData().observe(this) { list ->
-            val selectedItem = binding.spinnerDisciplines.selectedItem
-            if (selectedItem != null) {
-                updateAttendanceData(selectedItem.toString())
-            }
+            updateAttendanceData(binding.spinnerDisciplines.selectedItem.toString())
         }
     }
 }

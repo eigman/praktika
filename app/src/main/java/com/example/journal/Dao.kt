@@ -6,6 +6,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
+
 @Dao
 interface DeviceDao {
     @Insert
@@ -49,12 +50,6 @@ interface DeviceDao {
 
     @Insert
     fun insertSchedule(item: Schedule)
-
-    @Query("SELECT * FROM SCHEDULE")
-    suspend fun selectAllSchedule(): List<Schedule>
-
-    @Query("SELECT * FROM SCHEDULE WHERE ID_DISCIPLINE = :disciplineId")
-    suspend fun selectScheduleByDiscipline(disciplineId: Int): List<Schedule>
 
     @Query("SELECT * FROM ATTENDANCE")
     suspend fun selectAllAttendance(): List<Attendance>
