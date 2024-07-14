@@ -81,7 +81,7 @@ class Stats : AppCompatActivity() {
                 }
             } else {
                 val disciplineId = db.getDao().getDisciplineIdByName(discipline)
-                val attendances = db.getDao().selectAttendanceByDisciplineAndDate(disciplineId, dateFrom, dateTo)
+                val attendances = db.getDao().selectAttendanceByDiscipline(disciplineId)
                 attendances.forEach {
                     val current = attendanceMap[it.ID_STUDENT] ?: Triple(0, 0, 0)
                     attendanceMap[it.ID_STUDENT] = Triple(
