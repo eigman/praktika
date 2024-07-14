@@ -57,18 +57,20 @@ class Stats : AppCompatActivity() {
 
     private fun updateAttendanceData(discipline: String) {
         lifecycleScope.launch {
-            val attendanceMap = mutableMapOf<Int, Int>()
+            val attendanceMap = mutableMapOf<Int, Triple<Int, Int, Int>>()
 
             if (discipline == "Все") {
                 val attendances = db.getDao().selectAllAttendance()
                 attendances.forEach {
-                    attendanceMap[it.ID_STUDENT] = attendanceMap.getOrDefault(it.ID_STUDENT, 0) + it.YESORNO
+                    val current = attendanceMap[it.ID_STUDENT] ?: Triple(0, 0, 0)
+                    attendanceMap[it.ID_STUDENT] = Triple(current.first + 1, current.second + 4, current.third + it.YESORNO)
                 }
             } else {
                 val disciplineId = db.getDao().getDisciplineIdByName(discipline)
                 val attendances = db.getDao().selectAttendanceByDiscipline(disciplineId)
                 attendances.forEach {
-                    attendanceMap[it.ID_STUDENT] = attendanceMap.getOrDefault(it.ID_STUDENT, 0) + it.YESORNO
+                    val current = attendanceMap[it.ID_STUDENT] ?: Triple(0, 0, 0)
+                    attendanceMap[it.ID_STUDENT] = Triple(current.first + 1, current.second + 4, current.third + it.YESORNO)
                 }
             }
 
@@ -77,6 +79,7 @@ class Stats : AppCompatActivity() {
             }
         }
     }
+
 
     private fun observeStudents() {
         db.getDao().selectStudents().asLiveData().observe(this) { list ->
