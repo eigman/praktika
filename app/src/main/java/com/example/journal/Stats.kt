@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.DatePicker
+import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.asLiveData
@@ -17,6 +19,8 @@ class Stats : AppCompatActivity() {
     private lateinit var builder: AlertDialog.Builder
     private lateinit var db: MainDb
     private lateinit var studentAdapterStats: StudentAdapterStats
+    private lateinit var datePickerFrom: EditText
+    private lateinit var datePickerTo: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +28,9 @@ class Stats : AppCompatActivity() {
 
         binding = ActivityStatsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        datePickerFrom = findViewById(R.id.datePickerFrom)
+        datePickerTo = findViewById(R.id.datePickerTo)
 
         studentAdapterStats = StudentAdapterStats(emptyList())
         binding.RecyclerViewStats.apply {
@@ -56,6 +63,9 @@ class Stats : AppCompatActivity() {
     }
 
     private fun updateAttendanceData(discipline: String) {
+        val dateFrom = datePickerFrom.toString()
+        val dateTo = datePickerTo.toString()
+
         lifecycleScope.launch {
             val attendanceMap = mutableMapOf<Int, Triple<Int, Int, Int>>()
 
@@ -63,14 +73,22 @@ class Stats : AppCompatActivity() {
                 val attendances = db.getDao().selectAllAttendance()
                 attendances.forEach {
                     val current = attendanceMap[it.ID_STUDENT] ?: Triple(0, 0, 0)
-                    attendanceMap[it.ID_STUDENT] = Triple(current.first + 1, current.second + 4, current.third + it.YESORNO)
+                    attendanceMap[it.ID_STUDENT] = Triple(
+                        current.first + 1,
+                        current.second + it.YESORNO,
+                        current.third + it.YESORNO
+                    )
                 }
             } else {
                 val disciplineId = db.getDao().getDisciplineIdByName(discipline)
-                val attendances = db.getDao().selectAttendanceByDiscipline(disciplineId)
+                val attendances = db.getDao().selectAttendanceByDisciplineAndDate(disciplineId, dateFrom, dateTo)
                 attendances.forEach {
                     val current = attendanceMap[it.ID_STUDENT] ?: Triple(0, 0, 0)
-                    attendanceMap[it.ID_STUDENT] = Triple(current.first + 1, current.second + 4, current.third + it.YESORNO)
+                    attendanceMap[it.ID_STUDENT] = Triple(
+                        current.first + 1,
+                        current.second + it.YESORNO,
+                        current.third + it.YESORNO
+                    )
                 }
             }
 
@@ -79,6 +97,7 @@ class Stats : AppCompatActivity() {
             }
         }
     }
+
 
 
     private fun observeStudents() {
