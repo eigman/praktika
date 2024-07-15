@@ -34,8 +34,8 @@ class StudentAdapterStats(private var students: List<Student>) : RecyclerView.Ad
         private val textViewStudentStats: TextView = itemView.findViewById(R.id.textViewStudentStats)
         private val textViewAttendanceStats: TextView = itemView.findViewById(R.id.textViewAttendanceStats)
         private val textViewHoursStats: TextView = itemView.findViewById(R.id.textViewHoursStats)
-        private val textViewSkipsStats: TextView = itemView.findViewById(R.id.textViewSkipsStats)
-        private val textViewYes: TextView = itemView.findViewById(R.id.t88)
+        private val textViewSkipsStats: TextView = itemView.findViewById(R.id.t88)
+        private val textViewYes: TextView = itemView.findViewById(R.id.textViewSkipsStats)
 
         fun bind(index: Int, student: Student, attendanceData: Triple<Int, Int, Int>) {
             textViewIndexStats.text = index.toString()

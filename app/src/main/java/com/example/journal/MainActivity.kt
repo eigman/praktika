@@ -95,32 +95,6 @@ class MainActivity : ComponentActivity() {
                 .show()
         }
         val db = MainDb.getDb(this)
-        binding.button5.setOnClickListener{
-            val dialogView = layoutInflater.inflate(R.layout.dialog_add_at, null)
-            val editTextGroupNumber = dialogView.findViewById<EditText>(R.id.id_pair)
-            val editTextAmountOfStudents = dialogView.findViewById<EditText>(R.id.id_student)
-            val editTextYN = dialogView.findViewById<EditText>(R.id.YN)
 
-            builder.setView(dialogView)
-                .setTitle("Добавьте посещение")
-                .setCancelable(true)
-                .setPositiveButton("Yes") { dialogInterface, it ->
-
-                    val groupNumber = editTextGroupNumber.text.toString().toInt()
-                    val numberOfPeople = editTextAmountOfStudents.text.toString().toInt()
-                    val YN = editTextYN.text.toString().toInt()
-
-                    val group = Attendance(groupNumber, numberOfPeople, YN)
-                    Thread {
-                        db.getDao().insertAttendance(group)
-                    }.start()
-
-                    dialogInterface.dismiss()
-                }
-                .setNegativeButton("No") { dialogInterface, it ->
-                    dialogInterface.cancel()
-                }
-                .show()
-        }
     }
 }
