@@ -56,8 +56,6 @@ class AddStudentActivity : AppCompatActivity() {
                 .setTitle("Добавьте группу")
                 .setCancelable(true)
                 .setPositiveButton("Yes") { dialogInterface, it ->
-
-
                     Thread {
                         val surnameStudent = editTextSurnameStudent.text.toString()
                         val nameStudent = editTextNameStudent.text.toString()

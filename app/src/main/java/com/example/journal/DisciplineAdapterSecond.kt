@@ -30,8 +30,8 @@ class DisciplineAdapterSecond(private var disciplines: List<Discipline>) : Recyc
         private val textViewDiscipline: TextView = itemView.findViewById(R.id.textViewDiscipline)
 
         fun bind(index: Int, discipline: Discipline) {
-            textViewIndex.text = index.toString()
-            textViewDiscipline.text = ". ${discipline.NAME}"
+            //textViewIndex.text = index.toString()
+            textViewDiscipline.text = "${discipline.NAME}"
         }
     }
 

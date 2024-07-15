@@ -44,6 +44,11 @@ class MainActivity : ComponentActivity() {
             startActivity(intent)
         }
 
+        binding.schedule.setOnClickListener {
+            val intent = Intent(this, SchedulePresentation::class.java)
+            startActivity(intent)
+        }
+
         binding.addSchedule.setOnClickListener {
             val dialogView = layoutInflater.inflate(R.layout.dialog_add_schedule, null)
             val editTextPairDate = dialogView.findViewById<EditText>(R.id.editTextDate)
