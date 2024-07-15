@@ -8,8 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class ScheduleAdapter(
-    private var scheduleList: List<Schedule>,
-    private var disciplineList: List<Discipline>
+    private var groupedSchedules: List<Pair<String, List<Discipline>>>
 ) : RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScheduleViewHolder {
@@ -18,15 +17,14 @@ class ScheduleAdapter(
     }
 
     override fun onBindViewHolder(holder: ScheduleViewHolder, position: Int) {
-        val schedule = scheduleList[position]
-        holder.bind(schedule, disciplineList)
+        val (date, disciplines) = groupedSchedules[position]
+        holder.bind(date, disciplines)
     }
 
-    override fun getItemCount(): Int = scheduleList.size
+    override fun getItemCount(): Int = groupedSchedules.size
 
-    fun updateList(newScheduleList: List<Schedule>, newDisciplineList: List<Discipline>) {
-        scheduleList = newScheduleList
-        disciplineList = newDisciplineList
+    fun updateList(newGroupedSchedules: List<Pair<String, List<Discipline>>>) {
+        groupedSchedules = newGroupedSchedules
         notifyDataSetChanged()
     }
 
@@ -34,10 +32,9 @@ class ScheduleAdapter(
         private val textViewDate: TextView = itemView.findViewById(R.id.textViewDate)
         private val recyclerView: RecyclerView = itemView.findViewById(R.id.recyclerView)
 
-        fun bind(schedule: Schedule, disciplineList: List<Discipline>) {
-            textViewDate.text = schedule.DATE_PAIR
-            val disciplinesForDate = disciplineList.filter { it.ID_DISCIPLINE == schedule.ID_DISCIPLINE }
-            val adapter = DisciplineAdapterSecond(disciplinesForDate)
+        fun bind(date: String, disciplines: List<Discipline>) {
+            textViewDate.text = date
+            val adapter = DisciplineAdapterSecond(disciplines)
             recyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
             recyclerView.adapter = adapter
         }

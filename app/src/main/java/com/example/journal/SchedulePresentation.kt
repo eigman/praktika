@@ -18,13 +18,11 @@ class SchedulePresentation : AppCompatActivity() {
 
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        scheduleAdapter = ScheduleAdapter(emptyList(), emptyList())
+        scheduleAdapter = ScheduleAdapter(emptyList())
         recyclerView.adapter = scheduleAdapter
 
-        viewModel.scheduleList.observe(this, Observer { scheduleList ->
-            viewModel.disciplineList.observe(this, Observer { disciplineList ->
-                scheduleAdapter.updateList(scheduleList, disciplineList)
-            })
+        viewModel.groupedSchedules.observe(this, Observer { groupedSchedules ->
+            scheduleAdapter.updateList(groupedSchedules)
         })
     }
 }
