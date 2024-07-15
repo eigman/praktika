@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
             startActivity(intent)
         }
         binding.student.setOnClickListener {
-            val intent = Intent(this, AddStudentActivity::class.java)
+            val intent = Intent(this, ListStudentActivity::class.java)
             startActivity(intent)
         }
         binding.attendance.setOnClickListener {

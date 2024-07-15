@@ -13,10 +13,7 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
         <activity
-            android:name=".attendanceActivity"
-            android:exported="false" />
-        <activity
-            android:name=".attendanceTable"
+            android:name=".ListStudentActivity"
             android:exported="false" />
         <activity
             android:name=".AddStudentActivity"

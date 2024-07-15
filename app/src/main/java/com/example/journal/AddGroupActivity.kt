@@ -9,10 +9,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.asLiveData
 import com.example.journal.databinding.ActivityAddGroupBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.concurrent.thread
 
 class AddGroupActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddGroupBinding
@@ -20,6 +22,14 @@ class AddGroupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val db = MainDb.getDb(this)
+        db.getDao().selectAllGroup().asLiveData().observe(this) { list ->
+            binding.listGroup.text = ""
+            list.forEach {
+                val text = "id: ${it.GROUP_NUMBER}, " +
+                        "amount: ${it.AMOUNT_STUDENTS}\n"
+                binding.listGroup.append(text)
+            }
+        }
         binding = ActivityAddGroupBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -50,7 +60,6 @@ class AddGroupActivity : AppCompatActivity() {
                 }
                 .show()
         }
-
         binding.button3.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
