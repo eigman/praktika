@@ -54,7 +54,7 @@ class AddStudentActivity : AppCompatActivity() {
             val editTextPatronymicStudent = dialogView.findViewById<EditText>(R.id.patronymicStudent)
 
             builder.setView(dialogView)
-                .setTitle("Добавьте группу")
+                .setTitle("Добавьте студента")
                 .setCancelable(true)
                 .setPositiveButton("Yes") { dialogInterface, it ->
 
