@@ -6,11 +6,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
+import kotlinx.coroutines.flow.flowOn
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 
 class ScheduleViewModel(application: Application) : AndroidViewModel(application) {
@@ -57,7 +58,19 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun insert(schedule: Schedule) = viewModelScope.launch(Dispatchers.IO) {
-        repository.insertSchedule(schedule)
+        val dateFormat = SimpleDateFormat("dd.MM.yy", Locale.getDefault())
+        val initialDate = dateFormat.parse(schedule.DATE_PAIR)!!
+        val calendar = Calendar.getInstance()
+        calendar.time = initialDate
+
+        for (i in 0 until 9) { 
+            val newSchedule = schedule.copy(
+                ID_PAIR = null,
+                DATE_PAIR = dateFormat.format(calendar.time)
+            )
+            repository.insertSchedule(newSchedule)
+            calendar.add(Calendar.DAY_OF_YEAR, 14)
+        }
     }
 
     fun getDisciplineIdByName(name: String): LiveData<Int> {
