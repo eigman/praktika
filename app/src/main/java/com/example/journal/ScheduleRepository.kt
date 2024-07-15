@@ -1,7 +1,7 @@
 package com.example.journal
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
+import kotlinx.coroutines.flow.Flow
 
 class ScheduleRepository(private val dao: DeviceDao) {
     fun getAllDisciplines(): LiveData<List<String>> {
@@ -14,5 +14,13 @@ class ScheduleRepository(private val dao: DeviceDao) {
 
     suspend fun insertSchedule(schedule: Schedule) {
         dao.insertSchedule(schedule)
+    }
+
+    fun getAllSchedules(): Flow<List<Schedule>> {
+        return dao.selectAllSchedules()
+    }
+
+    fun getAllDisciplineEntities(): Flow<List<Discipline>> {
+        return dao.selectDisciplines()
     }
 }

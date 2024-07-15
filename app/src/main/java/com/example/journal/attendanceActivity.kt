@@ -31,7 +31,7 @@ class attendanceActivity : AppCompatActivity() {
         tableLayout = findViewById(R.id.tableAttendance)
         db = MainDb.getDb(this)
 
-        val date = "20.08.2024"
+        val date = "20.08.24"
 
         lifecycleScope.launch {
             val students = getStudents()
