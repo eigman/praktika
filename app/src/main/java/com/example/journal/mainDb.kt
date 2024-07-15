@@ -1,12 +1,9 @@
 package com.example.journal
 
 import android.content.Context
-import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-
-
 
 @Database
     (entities =
@@ -16,7 +13,6 @@ import androidx.room.RoomDatabase
     Attendance::class,
     Schedule::class],
     version = 1,exportSchema = false)
-
 
 abstract class MainDb : RoomDatabase() {
     abstract fun getDao(): DeviceDao

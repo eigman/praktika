@@ -27,7 +27,7 @@ data class Group(
 )
 data class Student(
     @PrimaryKey(autoGenerate = true)
-    val ID_STUDENT: Int? = null,
+    val ID_STUDENT: Int?,
     @ColumnInfo(name = "GROUP_NUMBER")
     val GROUP_NUMBER: Int,
     @ColumnInfo(name = "NAME")
