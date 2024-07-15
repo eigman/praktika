@@ -85,8 +85,8 @@ class Stats : AppCompatActivity() {
 
     private fun updateAttendanceData(discipline: String) {
         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        val dateFromText = datePickerFrom.text.toString()
-        val dateToText = datePickerTo.text.toString()
+        val dateFromText =if (datePickerFrom.text != null) datePickerFrom.text.toString() else "01012020"
+        val dateToText = if (datePickerTo.text != null) datePickerTo.text.toString() else "01012050"
 
         lifecycleScope.launch {
             val attendanceMap = withContext(Dispatchers.IO) {
@@ -147,7 +147,12 @@ class Stats : AppCompatActivity() {
 
     private fun observeStudents() {
         db.getDao().selectStudents().asLiveData().observe(this) { list ->
-            updateAttendanceData(binding.spinnerDisciplines.selectedItem.toString())
+            val selectedItem = binding.spinnerDisciplines.selectedItem
+            if (selectedItem != null) {
+                updateAttendanceData(selectedItem.toString())
+            } else {
+                updateAttendanceData("Все")
+            }
         }
     }
 }
