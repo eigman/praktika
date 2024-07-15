@@ -2,42 +2,27 @@ package com.example.journal
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.asLiveData
-import com.example.journal.databinding.ActivityAddGroupBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlin.concurrent.thread
+import com.example.journal.databinding.ActivityMainBinding
+import com.example.journal.databinding.AddGroupBinding
 
 class AddGroupActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityAddGroupBinding
+    private lateinit var binding: AddGroupBinding
     private lateinit var builder: AlertDialog.Builder
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val db = MainDb.getDb(this)
-        db.getDao().selectAllGroup().asLiveData().observe(this) { list ->
-            binding.listGroup.text = ""
-            list.forEach {
-                val text = "id: ${it.GROUP_NUMBER}, " +
-                        "amount: ${it.AMOUNT_STUDENTS}\n"
-                binding.listGroup.append(text)
-            }
-        }
-        binding = ActivityAddGroupBinding.inflate(layoutInflater)
+        val db = mainDb.getDb(this)
+        binding = AddGroupBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         builder = AlertDialog.Builder(this)
 
         binding.addGroup.setOnClickListener{
             val dialogView = layoutInflater.inflate(R.layout.dialog_add_group, null)
-            val editTextGroupNumber = dialogView.findViewById<EditText>(R.id.groupNumber1)
+            val editTextGroupNumber = dialogView.findViewById<EditText>(R.id.groupNumber)
             val editTextAmountOfStudents = dialogView.findViewById<EditText>(R.id.amountStudents)
 
             builder.setView(dialogView)
@@ -46,9 +31,9 @@ class AddGroupActivity : AppCompatActivity() {
                 .setPositiveButton("Yes") { dialogInterface, it ->
 
                     val groupNumber = editTextGroupNumber.text.toString().toInt()
-                    val numberOfPeople = editTextAmountOfStudents.text.toString().toInt()
+                    val numberOfPeople = editTextAmountOfStudents.text.toString()
 
-                    val group = Group(groupNumber, numberOfPeople)
+                    val group = group(groupNumber, numberOfPeople)
                     Thread {
                         db.getDao().insertGroup(group)
                     }.start()
@@ -60,6 +45,7 @@ class AddGroupActivity : AppCompatActivity() {
                 }
                 .show()
         }
+
         binding.button3.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)

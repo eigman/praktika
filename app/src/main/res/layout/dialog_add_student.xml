@@ -13,9 +13,11 @@
         android:hint="Фамилия"
         android:inputType="text"
         app:layout_constraintBottom_toTopOf="@+id/nameStudent"
-        app:layout_constraintEnd_toEndOf="@+id/nameStudent"
-        app:layout_constraintStart_toStartOf="@+id/nameStudent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <EditText
         android:id="@+id/nameStudent"
@@ -25,15 +27,14 @@
         android:hint="Имя"
         android:inputType="text"
         app:layout_constraintBottom_toTopOf="@+id/patronymicStudent"
-        app:layout_constraintEnd_toEndOf="@+id/patronymicStudent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/patronymicStudent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/surnameStudent" />
 
     <EditText
         android:id="@+id/patronymicStudent"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:ems="10"
         android:hint="Отчество"
         android:inputType="text"
