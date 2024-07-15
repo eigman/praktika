@@ -18,7 +18,7 @@ interface DeviceDao{
     fun selectAllGroup(): Flow<List<Group>>
     @Insert
     fun insertStudent(item: Student)
-    @Query ("SELECT * FROM STUDENTS")
+    @Query ("SELECT * FROM STUDENTS ORDER BY SURNAME")
     fun selectStudents(): Flow<List<Student>>
 
     @Query ("DELETE FROM GROUPS")
