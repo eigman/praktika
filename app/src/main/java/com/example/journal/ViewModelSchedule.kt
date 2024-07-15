@@ -10,6 +10,8 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class ScheduleViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: ScheduleRepository
@@ -45,7 +47,8 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         schedules: List<Schedule>,
         disciplines: List<Discipline>
     ): List<Pair<String, List<Discipline>>> {
-        return schedules.groupBy { it.DATE_PAIR }.map { (date, schedulesForDate) ->
+        val dateFormat = SimpleDateFormat("dd.MM.yy", Locale.getDefault())
+        return schedules.groupBy { it.DATE_PAIR }.toSortedMap(compareBy { dateFormat.parse(it) }).map { (date, schedulesForDate) ->
             val disciplinesForDate = schedulesForDate.map { schedule ->
                 disciplines.first { it.ID_DISCIPLINE == schedule.ID_DISCIPLINE }
             }
