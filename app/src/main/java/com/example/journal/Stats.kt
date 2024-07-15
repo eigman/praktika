@@ -1,10 +1,11 @@
 package com.example.journal
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.DatePicker
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +13,12 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.journal.databinding.ActivityStatsBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Locale
+
 
 class Stats : AppCompatActivity() {
     private lateinit var binding: ActivityStatsBinding
@@ -29,8 +35,8 @@ class Stats : AppCompatActivity() {
         binding = ActivityStatsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        datePickerFrom = findViewById(R.id.datePickerFrom)
-        datePickerTo = findViewById(R.id.datePickerTo)
+        datePickerFrom = binding.datePickerFrom
+        datePickerTo = binding.datePickerTo
 
         studentAdapterStats = StudentAdapterStats(emptyList())
         binding.RecyclerViewStats.apply {
@@ -40,6 +46,7 @@ class Stats : AppCompatActivity() {
 
         setupSpinner()
         observeStudents()
+        setupDatePickers()
     }
 
     private fun setupSpinner() {
@@ -49,7 +56,7 @@ class Stats : AppCompatActivity() {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             binding.spinnerDisciplines.adapter = adapter
 
-            binding.spinnerDisciplines.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            binding.spinnerDisciplines.onItemSelectedListener = object :AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                     val selectedDiscipline = allDisciplines[position]
                     updateAttendanceData(selectedDiscipline)
@@ -62,43 +69,81 @@ class Stats : AppCompatActivity() {
         }
     }
 
-    private fun updateAttendanceData(discipline: String) {
-        val dateFrom = datePickerFrom.toString()
-        val dateTo = datePickerTo.toString()
-
-        lifecycleScope.launch {
-            val attendanceMap = mutableMapOf<Int, Triple<Int, Int, Int>>()
-
-            if (discipline == "Все") {
-                val attendances = db.getDao().selectAllAttendance()
-                attendances.forEach {
-                    val current = attendanceMap[it.ID_STUDENT] ?: Triple(0, 0, 0)
-                    attendanceMap[it.ID_STUDENT] = Triple(
-                        current.first + 1,
-                        current.second + it.YESORNO,
-                        current.third + it.YESORNO
-                    )
-                }
-            } else {
-                val disciplineId = db.getDao().getDisciplineIdByName(discipline)
-                val attendances = db.getDao().selectAttendanceByDiscipline(disciplineId)
-                attendances.forEach {
-                    val current = attendanceMap[it.ID_STUDENT] ?: Triple(0, 0, 0)
-                    attendanceMap[it.ID_STUDENT] = Triple(
-                        current.first + 1,
-                        current.second + it.YESORNO,
-                        current.third + it.YESORNO
-                    )
-                }
+    private fun setupDatePickers() {
+        val textWatcher = object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                updateAttendanceData(binding.spinnerDisciplines.selectedItem.toString())
             }
 
-            db.getDao().selectStudents().asLiveData().observe(this@Stats) { list ->
-                studentAdapterStats.updateList(list, attendanceMap)
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        }
+
+        datePickerFrom.addTextChangedListener(textWatcher)
+        datePickerTo.addTextChangedListener(textWatcher)
+    }
+
+    private fun updateAttendanceData(discipline: String) {
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val dateFromText = datePickerFrom.text.toString()
+        val dateToText = datePickerTo.text.toString()
+
+        lifecycleScope.launch {
+            val attendanceMap = withContext(Dispatchers.IO) {
+                val attendanceMap = mutableMapOf<Int, Triple<Int, Int, Int>>()
+                if (discipline == "Все") {
+                    val attendances = if (dateFromText.isNotEmpty() && dateToText.isNotEmpty()) {
+                        try {
+                            dateFormat.parse(dateFromText)
+                            dateFormat.parse(dateToText)
+                            db.getDao().selectAttendanceBetweenDates(dateFromText, dateToText)
+                        } catch (e: Exception) {
+                            emptyList() // or handle the exception as needed
+                        }
+                    } else {
+                        db.getDao().selectAllAttendance()
+                    }
+                    attendances.forEach {
+                        val current = attendanceMap[it.ID_STUDENT] ?: Triple(0, 0, 0)
+                        attendanceMap[it.ID_STUDENT] = Triple(
+                            current.first + 1,
+                            current.second + it.YESORNO,
+                            current.third + if(it.YESORNO == 0) 1 else 0
+                        )
+                    }
+                } else {
+                    val disciplineId = db.getDao().getDisciplineIdByName(discipline)
+                    val attendances = if (dateFromText.isNotEmpty() && dateToText.isNotEmpty()) {
+                        try {
+                            dateFormat.parse(dateFromText)
+                            dateFormat.parse(dateToText)
+                            db.getDao().selectAttendanceByDisciplineAndDates(disciplineId, dateFromText, dateToText)
+                        } catch (e: Exception) {
+                            emptyList() // or handle the exception as needed
+                        }
+                    } else {
+                        db.getDao().selectAttendanceByDiscipline(disciplineId)
+                    }
+                    attendances.forEach {
+                        val current = attendanceMap[it.ID_STUDENT] ?: Triple(0, 0, 0)
+                        attendanceMap[it.ID_STUDENT] = Triple(
+                            current.first + 1,
+                            current.second + it.YESORNO,
+                            current.third + if (it.YESORNO == 0) 1 else 0
+                        )
+                    }
+                }
+                attendanceMap
+            }
+
+            // Обновляем адаптер в главном потоке
+            withContext(Dispatchers.Main) {
+                db.getDao().selectStudents().asLiveData().observe(this@Stats) { list ->
+                    studentAdapterStats.updateList(list, attendanceMap)
+                }
             }
         }
     }
-
-
 
     private fun observeStudents() {
         db.getDao().selectStudents().asLiveData().observe(this) { list ->

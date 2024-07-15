@@ -48,15 +48,34 @@ interface DeviceDao {
     @Query("SELECT NAME FROM DISCIPLINES")
     fun selectAllDisciplineNames(): LiveData<List<String>>
 
-
-
-
-@Insert
+    @Insert
     fun insertSchedule(item: Schedule)
+
+    @Query("""
+        SELECT A.* 
+        FROM ATTENDANCE A
+        JOIN SCHEDULE S ON A.ID_PAIR = S.ID_PAIR
+        WHERE S.ID_DISCIPLINE = :disciplineId 
+        AND S.DATE_PAIR BETWEEN :dateFrom AND :dateTo
+    """)
+    suspend fun selectAttendanceByDisciplineAndDates(disciplineId: Int, dateFrom: String, dateTo: String): List<Attendance>
+
+
+    @Query("""
+        SELECT A.* 
+        FROM ATTENDANCE A
+        JOIN SCHEDULE S ON A.ID_PAIR = S.ID_PAIR
+        WHERE S.DATE_PAIR BETWEEN :dateFrom AND :dateTo
+    """)
+    suspend fun selectAttendanceBetweenDates(dateFrom: String, dateTo: String): List<Attendance>
+
+
 
     @Query("SELECT * FROM ATTENDANCE")
     suspend fun selectAllAttendance(): List<Attendance>
 
     @Query("SELECT * FROM ATTENDANCE WHERE ID_PAIR IN (SELECT ID_PAIR FROM SCHEDULE WHERE ID_DISCIPLINE = :disciplineId)")
-    suspend fun selectAttendanceByDiscipline(disciplineId: Int): List<Attendance>
+    suspend fun selectAttendanceByDiscipline(disciplineId:Int): List<Attendance>
+
 }
+

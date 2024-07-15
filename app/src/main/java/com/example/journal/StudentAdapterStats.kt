@@ -8,16 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class StudentAdapterStats(private var students: List<Student>) : RecyclerView.Adapter<StudentAdapterStats.StudentViewHolderStats>() {
 
-    private lateinit var listener: OnItemClickListener
     private var attendances: Map<Int, Triple<Int, Int, Int>> = emptyMap()
-
-    interface OnItemClickListener {
-        fun onDeleteClick(position: Int)
-    }
-
-    fun setOnItemClickListener(listener: OnItemClickListener) {
-        this.listener = listener
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentViewHolderStats {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.student_item_stats, parent, false)
@@ -49,14 +40,10 @@ class StudentAdapterStats(private var students: List<Student>) : RecyclerView.Ad
         fun bind(index: Int, student: Student, attendanceData: Triple<Int, Int, Int>) {
             textViewIndexStats.text = index.toString()
             textViewStudentStats.text = "${student.SURNAME} ${student.NAME} ${student.PATRONYMIC}"
-            textViewAttendanceStats.text = (attendanceData.first - attendanceData.third).toString() // Посещений
-            textViewHoursStats.text = ((attendanceData.first - attendanceData.third) *2).toString() // Часы
-            textViewSkipsStats.text = attendanceData.first.toString() // Пропуски
-            textViewYes.text = attendanceData.third.toString()
+            textViewAttendanceStats.text = attendanceData.second.toString() // Посещений
+            textViewHoursStats.text = (attendanceData.second * 2).toString() // Часы
+            textViewSkipsStats.text = attendanceData.third.toString() // Пропуски
+            textViewYes.text = attendanceData.first.toString()
         }
-    }
-
-    fun getItem(position: Int): Student {
-        return students[position]
     }
 }
