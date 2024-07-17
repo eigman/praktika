@@ -17,7 +17,9 @@
                 android:id="@+id/tableAttendance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:stretchColumns="1" />
+                android:stretchColumns="1"
+                android:shrinkColumns="1"
+                android:padding="16dp" />
 
         </ScrollView>
     </HorizontalScrollView>

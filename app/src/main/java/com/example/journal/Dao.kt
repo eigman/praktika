@@ -83,7 +83,11 @@ interface DeviceDao{
     """)
     suspend fun selectAttendanceBetweenDates(dateFrom: String, dateTo: String): List<Attendance>
 
+    @Query("SELECT * FROM ATTENDANCE WHERE ID_PAIR = :idOfPair AND ID_STUDENT = :idOfStudent LIMIT 1")
+    suspend fun getAttendanceRecord(idOfPair: Int, idOfStudent: Int): Attendance?
 
+    @Insert
+    suspend fun insertAttendance(attendance: Attendance)
 
     @Query("SELECT * FROM ATTENDANCE")
     suspend fun selectAllAttendance(): List<Attendance>

@@ -1,6 +1,7 @@
 package com.example.journal
 
 import android.annotation.SuppressLint
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.Gravity
 import android.widget.CheckBox
@@ -39,7 +40,7 @@ class attendanceActivity : AppCompatActivity() {
             val attendance = getAttendance()
 
             withContext(Dispatchers.Main) {
-                createTable(students, pairsWithDiscipline, attendance)
+                checkDataAndCreateTable(students, pairsWithDiscipline, attendance)
             }
         }
     }
@@ -56,12 +57,64 @@ class attendanceActivity : AppCompatActivity() {
         db.getDao().getAttDirect()
     }
 
+    private suspend fun createAttendanceRecordsIfNeeded(date: String, students: List<Student>, pairsWithDiscipline: List<PairWithDiscipline>) {
+        withContext(Dispatchers.IO) {
+            students.forEach { student ->
+                pairsWithDiscipline.forEach { pair ->
+                    val attendanceRecord = db.getDao().getAttendanceRecord(pair.ID_PAIR, student.ID_STUDENT!!)
+                    if (attendanceRecord == null) {
+                        db.getDao().insertAttendance(Attendance(
+                            ID_STUDENT = student.ID_STUDENT!!,
+                            ID_PAIR = pair.ID_PAIR,
+                            YESORNO = 0
+                        ))
+                    }
+                }
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun checkDataAndCreateTable(students: List<Student>, pairsWithDiscipline: List<PairWithDiscipline>, attendance: List<Attendance>) {
+        tableLayout.removeAllViews()
+
+        val message = when {
+            students.isEmpty() && pairsWithDiscipline.isEmpty() -> "Список группы и расписание отсутствуют"
+            students.isEmpty() -> "Список группы отсутствует"
+            pairsWithDiscipline.isEmpty() -> "Расписание отсутствует"
+            else -> null
+        }
+
+        if (message != null) {
+            val messageTextView = TextView(this).apply {
+                text = message
+                gravity = Gravity.CENTER
+                textSize = 20f
+                setTypeface(null, Typeface.NORMAL)
+                layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT).apply {
+                    gravity = Gravity.CENTER
+                }
+            }
+            tableLayout.addView(messageTextView)
+        } else {
+            lifecycleScope.launch {
+                createAttendanceRecordsIfNeeded("20.08.24", students, pairsWithDiscipline)
+                val updatedAttendance = getAttendance()
+                withContext(Dispatchers.Main) {
+                    createTable(students, pairsWithDiscipline, updatedAttendance)
+                }
+            }
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     private fun createTable(students: List<Student>, pairsWithDiscipline: List<PairWithDiscipline>, attendance: List<Attendance>) {
         tableLayout.removeAllViews()
 
         val headerRow = TableRow(this)
-        headerRow.layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT)
+        headerRow.layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT).apply {
+            setMargins(0, 16, 0, 16)
+        }
 
         val emptyCell = TextView(this)
         emptyCell.text = ""
@@ -81,10 +134,13 @@ class attendanceActivity : AppCompatActivity() {
 
         students.forEach { student ->
             val row = TableRow(this)
-            row.layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT)
+            row.layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT).apply {
+                setMargins(0, 16, 0, 16)
+            }
 
             val studentCell = TextView(this)
-            studentCell.text = student.SURNAME
+            val initials = "${student.SURNAME} ${student.NAME.firstOrNull()?.toUpperCase() ?: ""}.${student.PATRONYMIC.firstOrNull()?.toUpperCase()?.let { "$it." } ?: ""}"
+            studentCell.text = initials
             studentCell.gravity = Gravity.CENTER
             studentCell.layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT)
             row.addView(studentCell)
@@ -96,13 +152,13 @@ class attendanceActivity : AppCompatActivity() {
 
                 checkBox.layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT).apply {
                     gravity = Gravity.CENTER
+                    setMargins(16, 0, 16, 0)
                 }
 
                 checkBox.setOnCheckedChangeListener { _, isChecked ->
                     lifecycleScope.launch(Dispatchers.IO) {
                         student.ID_STUDENT?.let {
-                            db.getDao().updateAttendance(pair.ID_PAIR,
-                                it, if (isChecked) 1 else 0)
+                            db.getDao().updateAttendance(pair.ID_PAIR, it, if (isChecked) 1 else 0)
                         }
                     }
                 }
