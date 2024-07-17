@@ -2,7 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/dateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textStyle="normal"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="16dp" />
 
     <HorizontalScrollView
         android:layout_width="match_parent"
@@ -15,11 +25,8 @@
 
             <TableLayout
                 android:id="@+id/tableAttendance"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:stretchColumns="1"
-                android:shrinkColumns="1"
-                android:padding="16dp" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
         </ScrollView>
     </HorizontalScrollView>

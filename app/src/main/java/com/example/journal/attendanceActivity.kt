@@ -32,7 +32,10 @@ class attendanceActivity : AppCompatActivity() {
         tableLayout = findViewById(R.id.tableAttendance)
         db = MainDb.getDb(this)
 
-        val date = intent.getStringExtra("DATE") ?: "20.08.24" // Получить дату из Intent
+        val date = intent.getStringExtra("DATE") ?: "20.08.24"
+
+        val dateTextView = findViewById<TextView>(R.id.dateTextView)
+        dateTextView.text = "Посещения $date"
 
         lifecycleScope.launch {
             val students = getStudents()
@@ -111,54 +114,67 @@ class attendanceActivity : AppCompatActivity() {
     private fun createTable(students: List<Student>, pairsWithDiscipline: List<PairWithDiscipline>, attendance: List<Attendance>) {
         tableLayout.removeAllViews()
 
-        val headerRow = TableRow(this)
-        headerRow.layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT).apply {
-            setMargins(0, 16, 0, 16)
+        val headerRow = TableRow(this).apply {
+            layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT).apply {
+                setMargins(0, 16, 0, 16)
+            }
         }
 
-        val emptyCell = TextView(this)
-        emptyCell.text = ""
-        emptyCell.gravity = Gravity.CENTER
-        emptyCell.layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT)
+        val emptyCell = TextView(this).apply {
+            text = ""
+            gravity = Gravity.CENTER
+            layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT).apply {
+                width = 300
+            }
+        }
         headerRow.addView(emptyCell)
 
-        pairsWithDiscipline.forEachIndexed { index, pair ->
-            val pairHeader = TextView(this)
-            pairHeader.text = if (index == 0) "${pair.NAME}\n(${pair.TYPE})" else "\t${pair.NAME}\n(${pair.TYPE})"
-            pairHeader.gravity = Gravity.CENTER
-            pairHeader.layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT)
+        pairsWithDiscipline.forEach { pair ->
+            val pairHeader = TextView(this).apply {
+                text = "${pair.NAME}\n(${pair.TYPE})"
+                gravity = Gravity.CENTER
+                layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT).apply {
+                    width = 300
+                }
+            }
             headerRow.addView(pairHeader)
         }
 
         tableLayout.addView(headerRow)
 
         students.forEach { student ->
-            val row = TableRow(this)
-            row.layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT).apply {
-                setMargins(0, 16, 0, 16)
+            val row = TableRow(this).apply {
+                layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT).apply {
+                    setMargins(0, 16, 0, 16)
+                }
             }
 
-            val studentCell = TextView(this)
-            val initials = "${student.SURNAME} ${student.NAME.firstOrNull()?.toUpperCase() ?: ""}.${student.PATRONYMIC.firstOrNull()?.toUpperCase()?.let { "$it." } ?: ""}"
-            studentCell.text = initials
-            studentCell.gravity = Gravity.CENTER
-            studentCell.layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT)
+            val studentCell = TextView(this).apply {
+                val initials = "${student.SURNAME} ${student.NAME.firstOrNull()?.toUpperCase() ?: ""}.${student.PATRONYMIC.firstOrNull()?.toUpperCase()?.let { "$it." } ?: ""}"
+                text = initials
+                gravity = Gravity.CENTER
+                layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT).apply {
+                    width = 300
+                    gravity = Gravity.CENTER_VERTICAL
+                }
+            }
             row.addView(studentCell)
 
             pairsWithDiscipline.forEach { pair ->
-                val checkBox = CheckBox(this)
-                val attRecord = attendance.find { it.ID_PAIR == pair.ID_PAIR && it.ID_STUDENT == student.ID_STUDENT }
-                checkBox.isChecked = attRecord?.YESORNO == 1
+                val checkBox = CheckBox(this).apply {
+                    val attRecord = attendance.find { it.ID_PAIR == pair.ID_PAIR && it.ID_STUDENT == student.ID_STUDENT }
+                    isChecked = attRecord?.YESORNO == 1
 
-                checkBox.layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT).apply {
-                    gravity = Gravity.CENTER
-                    setMargins(16, 0, 16, 0)
-                }
+                    layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT).apply {
+                        gravity = Gravity.CENTER
+                        width = 300
+                    }
 
-                checkBox.setOnCheckedChangeListener { _, isChecked ->
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        student.ID_STUDENT?.let {
-                            db.getDao().updateAttendance(pair.ID_PAIR, it, if (isChecked) 1 else 0)
+                    setOnCheckedChangeListener { _, isChecked ->
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            student.ID_STUDENT?.let {
+                                db.getDao().updateAttendance(pair.ID_PAIR, it, if (isChecked) 1 else 0)
+                            }
                         }
                     }
                 }

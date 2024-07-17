@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val typesOfPair = arrayOf("Л", "ПР", "ЛЕК")
+        val typesOfPair = arrayOf("ЛР", "ПР", "Л")
         val numbersOfPair = arrayOf("1", "2", "3", "4", "5", "6")
         builder = AlertDialog.Builder(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -47,11 +47,6 @@ class MainActivity : ComponentActivity() {
 
         binding.stats.setOnClickListener {
             val intent = Intent(this, Stats::class.java)
-            startActivity(intent)
-        }
-
-        binding.attendance.setOnClickListener {
-            val intent = Intent(this, attendanceActivity::class.java)
             startActivity(intent)
         }
 
