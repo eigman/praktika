@@ -22,14 +22,7 @@ class AddGroupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val db = MainDb.getDb(this)
-        db.getDao().selectAllGroup().asLiveData().observe(this) { list ->
-            binding.listGroup.text = ""
-            list.forEach {
-                val text = "id: ${it.GROUP_NUMBER}, " +
-                        "amount: ${it.AMOUNT_STUDENTS}\n"
-                binding.listGroup.append(text)
-            }
-        }
+
         binding = ActivityAddGroupBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
