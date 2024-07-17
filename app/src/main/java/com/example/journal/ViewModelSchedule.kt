@@ -1,23 +1,23 @@
 package com.example.journal
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
-import kotlinx.coroutines.flow.flowOn
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+data class ScheduleWithDisciplineName(
+    val schedule: Schedule,
+    val disciplineName: String
+)
+
 class ScheduleViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: ScheduleRepository
     val allDisciplines: LiveData<List<String>>
-    val groupedSchedules: MediatorLiveData<List<Pair<String, List<Discipline>>>>
+    val groupedSchedulesWithDisciplines: MediatorLiveData<List<Pair<String, List<ScheduleWithDisciplineName>>>>
 
     init {
         val dao = MainDb.getDb(application).getDao()
@@ -27,34 +27,41 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         val schedulesLiveData = repository.getAllSchedules().flowOn(Dispatchers.IO).asLiveData()
         val disciplinesLiveData = repository.getAllDisciplineEntities().flowOn(Dispatchers.IO).asLiveData()
 
-        groupedSchedules = MediatorLiveData<List<Pair<String, List<Discipline>>>>()
+        groupedSchedulesWithDisciplines = MediatorLiveData<List<Pair<String, List<ScheduleWithDisciplineName>>>>()
 
-        groupedSchedules.addSource(schedulesLiveData) { schedules ->
+        groupedSchedulesWithDisciplines.addSource(schedulesLiveData) { schedules ->
             val disciplines = disciplinesLiveData.value
             if (disciplines != null) {
-                groupedSchedules.value = groupSchedulesByDate(schedules, disciplines)
+                groupedSchedulesWithDisciplines.value = groupSchedulesWithDisciplinesByDate(schedules, disciplines)
             }
         }
 
-        groupedSchedules.addSource(disciplinesLiveData) { disciplines ->
+        groupedSchedulesWithDisciplines.addSource(disciplinesLiveData) { disciplines ->
             val schedules = schedulesLiveData.value
             if (schedules != null) {
-                groupedSchedules.value = groupSchedulesByDate(schedules, disciplines)
+                groupedSchedulesWithDisciplines.value = groupSchedulesWithDisciplinesByDate(schedules, disciplines)
             }
         }
     }
 
-    private fun groupSchedulesByDate(
+    private fun groupSchedulesWithDisciplinesByDate(
         schedules: List<Schedule>,
         disciplines: List<Discipline>
-    ): List<Pair<String, List<Discipline>>> {
+    ): List<Pair<String, List<ScheduleWithDisciplineName>>> {
+        val disciplineMap = disciplines.associateBy { it.ID_DISCIPLINE }
         val dateFormat = SimpleDateFormat("dd.MM.yy", Locale.getDefault())
-        return schedules.groupBy { it.DATE_PAIR }.toSortedMap(compareBy { dateFormat.parse(it) }).map { (date, schedulesForDate) ->
-            val disciplinesForDate = schedulesForDate.map { schedule ->
-                disciplines.first { it.ID_DISCIPLINE == schedule.ID_DISCIPLINE }
+
+        return schedules.groupBy { it.DATE_PAIR }
+            .toSortedMap(compareBy { dateFormat.parse(it) })
+            .map { (date, schedulesForDate) ->
+                val schedulesWithDisciplineNameForDate = schedulesForDate.map { schedule ->
+                    ScheduleWithDisciplineName(
+                        schedule,
+                        disciplineMap[schedule.ID_DISCIPLINE]?.NAME ?: "Unknown Discipline"
+                    )
+                }
+                date to schedulesWithDisciplineNameForDate
             }
-            date to disciplinesForDate
-        }
     }
 
     fun insert(schedule: Schedule) = viewModelScope.launch(Dispatchers.IO) {
@@ -82,3 +89,4 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         return result
     }
 }
+

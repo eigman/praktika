@@ -32,7 +32,7 @@ class attendanceActivity : AppCompatActivity() {
         tableLayout = findViewById(R.id.tableAttendance)
         db = MainDb.getDb(this)
 
-        val date = "20.08.24"
+        val date = intent.getStringExtra("DATE") ?: "20.08.24" // Получить дату из Intent
 
         lifecycleScope.launch {
             val students = getStudents()
