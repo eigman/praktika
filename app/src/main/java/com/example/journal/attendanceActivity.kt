@@ -31,7 +31,7 @@ class attendanceActivity : AppCompatActivity() {
         tableLayout = findViewById(R.id.tableAttendance)
         db = MainDb.getDb(this)
 
-        val date = "20.08.24"
+        val date = intent.getStringExtra("DATE") ?: "20.08.24" // Получить дату из Intent
 
         lifecycleScope.launch {
             val students = getStudents()
@@ -101,8 +101,7 @@ class attendanceActivity : AppCompatActivity() {
                 checkBox.setOnCheckedChangeListener { _, isChecked ->
                     lifecycleScope.launch(Dispatchers.IO) {
                         student.ID_STUDENT?.let {
-                            db.getDao().updateAttendance(pair.ID_PAIR,
-                                it, if (isChecked) 1 else 0)
+                            db.getDao().updateAttendance(pair.ID_PAIR, it, if (isChecked) 1 else 0)
                         }
                     }
                 }

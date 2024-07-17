@@ -21,7 +21,7 @@ class SchedulePresentation : AppCompatActivity() {
         scheduleAdapter = ScheduleAdapter(emptyList())
         recyclerView.adapter = scheduleAdapter
 
-        viewModel.groupedSchedules.observe(this, Observer { groupedSchedules ->
+        viewModel.groupedSchedulesWithDisciplines.observe(this, Observer { groupedSchedules ->
             scheduleAdapter.updateList(groupedSchedules)
         })
     }

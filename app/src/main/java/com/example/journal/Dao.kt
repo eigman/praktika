@@ -64,6 +64,8 @@ interface DeviceDao{
     fun insertSchedule(item: Schedule)
     @Query("SELECT * FROM SCHEDULE")
     fun selectAllSchedules(): Flow<List<Schedule>>
+    @Delete
+    fun deleteSchedule(schedule: Schedule)
 
     @Query("""
         SELECT A.* 
