@@ -9,6 +9,7 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,6 +25,8 @@ class attendanceActivity : AppCompatActivity() {
 
     private lateinit var tableLayout: TableLayout
     private lateinit var db: MainDb
+    private lateinit var robotoBold: Typeface
+    private lateinit var robotoNormal: Typeface
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,10 +35,16 @@ class attendanceActivity : AppCompatActivity() {
         tableLayout = findViewById(R.id.tableAttendance)
         db = MainDb.getDb(this)
 
+        robotoBold = ResourcesCompat.getFont(this, R.font.roboto_bold)!!
+        robotoNormal = ResourcesCompat.getFont(this, R.font.roboto_medium)!!
+
         val date = intent.getStringExtra("DATE") ?: "20.08.24"
 
-        val dateTextView = findViewById<TextView>(R.id.dateTextView)
-        dateTextView.text = "Посещения $date"
+        val dateTextView = findViewById<TextView>(R.id.dateTextView).apply {
+            text = "Посещения $date"
+            typeface = robotoBold
+            setTextColor(resources.getColor(android.R.color.black))
+        }
 
         lifecycleScope.launch {
             val students = getStudents()
@@ -49,7 +58,7 @@ class attendanceActivity : AppCompatActivity() {
     }
 
     private suspend fun getStudents(): List<Student> = withContext(Dispatchers.IO) {
-        db.getDao().getStudentsDirect()
+        db.getDao().getStudentsDirect().sortedWith(compareBy({ it.SURNAME.toLowerCase() }, { it.NAME.toLowerCase() }))
     }
 
     private suspend fun getPairsWithDisciplineByDate(date: String): List<PairWithDiscipline> = withContext(Dispatchers.IO) {
@@ -93,7 +102,8 @@ class attendanceActivity : AppCompatActivity() {
                 text = message
                 gravity = Gravity.CENTER
                 textSize = 20f
-                setTypeface(null, Typeface.NORMAL)
+                typeface = robotoNormal
+                setTextColor(resources.getColor(android.R.color.black))
                 layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT).apply {
                     gravity = Gravity.CENTER
                 }
@@ -123,6 +133,7 @@ class attendanceActivity : AppCompatActivity() {
         val emptyCell = TextView(this).apply {
             text = ""
             gravity = Gravity.CENTER
+            setTextColor(resources.getColor(android.R.color.black))
             layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT).apply {
                 width = 300
             }
@@ -133,6 +144,8 @@ class attendanceActivity : AppCompatActivity() {
             val pairHeader = TextView(this).apply {
                 text = "${pair.NAME}\n(${pair.TYPE})"
                 gravity = Gravity.CENTER
+                typeface = robotoNormal
+                setTextColor(resources.getColor(android.R.color.black))
                 layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT).apply {
                     width = 300
                 }
@@ -150,9 +163,10 @@ class attendanceActivity : AppCompatActivity() {
             }
 
             val studentCell = TextView(this).apply {
-                val initials = "${student.SURNAME} ${student.NAME.firstOrNull()?.toUpperCase() ?: ""}.${student.PATRONYMIC.firstOrNull()?.toUpperCase()?.let { "$it." } ?: ""}"
-                text = initials
+                text = "${student.SURNAME} ${student.NAME}"
                 gravity = Gravity.CENTER
+                typeface = robotoNormal
+                setTextColor(resources.getColor(android.R.color.black))
                 layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT).apply {
                     width = 300
                     gravity = Gravity.CENTER_VERTICAL
