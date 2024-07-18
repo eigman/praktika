@@ -185,4 +185,5 @@
         app:layout_constraintEnd_toStartOf="@+id/disciplines"
         app:layout_constraintStart_toEndOf="@+id/schedule" />
 
+
 </androidx.constraintlayout.widget.ConstraintLayout>

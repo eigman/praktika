@@ -1,5 +1,6 @@
 package com.example.journal
 
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -18,8 +19,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
-
 
 class Stats : AppCompatActivity() {
     private lateinit var binding: ActivityStatsBinding
@@ -29,7 +30,6 @@ class Stats : AppCompatActivity() {
     private lateinit var datePickerFrom: EditText
     private lateinit var datePickerTo: EditText
 
-
     private fun openActivity(targetActivity: Class<*>) {
         val intent = Intent(this, targetActivity)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -37,7 +37,6 @@ class Stats : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         db = MainDb.getDb(this)
 
@@ -56,7 +55,6 @@ class Stats : AppCompatActivity() {
         binding.disciplines.setOnClickListener {
             openActivity(DisciplinesActivity::class.java)
         }
-
 
         binding.schedule.setOnClickListener {
             openActivity(SchedulePresentation::class.java)
@@ -78,7 +76,7 @@ class Stats : AppCompatActivity() {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             binding.spinnerDisciplines.adapter = adapter
 
-            binding.spinnerDisciplines.onItemSelectedListener = object :AdapterView.OnItemSelectedListener {
+            binding.spinnerDisciplines.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                     val selectedDiscipline = allDisciplines[position]
                     updateAttendanceData(selectedDiscipline)
@@ -91,10 +89,35 @@ class Stats : AppCompatActivity() {
         }
     }
 
-
-
-
     private fun setupDatePickers() {
+        val calendar = Calendar.getInstance()
+
+        val dateFromListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.MONTH, month)
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+            updateLabel(datePickerFrom, calendar)
+        }
+
+        val dateToListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.MONTH, month)
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+            updateLabel(datePickerTo, calendar)
+        }
+
+        datePickerFrom.setOnClickListener {
+            DatePickerDialog(this, dateFromListener,
+                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)).show()
+        }
+
+        datePickerTo.setOnClickListener {
+            DatePickerDialog(this, dateToListener,
+                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)).show()
+        }
+
         val textWatcher = object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 updateAttendanceData(binding.spinnerDisciplines.selectedItem.toString())
@@ -108,9 +131,14 @@ class Stats : AppCompatActivity() {
         datePickerTo.addTextChangedListener(textWatcher)
     }
 
+    private fun updateLabel(editText: EditText, calendar: Calendar) {
+        val dateFormat = SimpleDateFormat("dd.MM.yy", Locale.getDefault())
+        editText.setText(dateFormat.format(calendar.time))
+    }
+
     private fun updateAttendanceData(discipline: String) {
         val dateFormat = SimpleDateFormat("dd.MM.yy", Locale.getDefault())
-        val dateFromText =if (datePickerFrom.text != null) datePickerFrom.text.toString() else "010120"
+        val dateFromText = if (datePickerFrom.text != null) datePickerFrom.text.toString() else "010120"
         val dateToText = if (datePickerTo.text != null) datePickerTo.text.toString() else "010150"
 
         lifecycleScope.launch {
@@ -123,7 +151,7 @@ class Stats : AppCompatActivity() {
                             dateFormat.parse(dateToText)
                             db.getDao().selectAttendanceBetweenDates(dateFromText, dateToText)
                         } catch (e: Exception) {
-                            emptyList() // or handle the exception as needed
+                            emptyList() // или обработать исключение при необходимости
                         }
                     } else {
                         db.getDao().selectAllAttendance()
@@ -144,7 +172,7 @@ class Stats : AppCompatActivity() {
                             dateFormat.parse(dateToText)
                             db.getDao().selectAttendanceByDisciplineAndDates(disciplineId, dateFromText, dateToText)
                         } catch (e: Exception) {
-                            emptyList() // or handle the exception as needed
+                            emptyList() // или обработать исключение при необходимости
                         }
                     } else {
                         db.getDao().selectAttendanceByDiscipline(disciplineId)
