@@ -109,9 +109,9 @@ class Stats : AppCompatActivity() {
     }
 
     private fun updateAttendanceData(discipline: String) {
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        val dateFromText =if (datePickerFrom.text != null) datePickerFrom.text.toString() else "01012020"
-        val dateToText = if (datePickerTo.text != null) datePickerTo.text.toString() else "01012050"
+        val dateFormat = SimpleDateFormat("dd.MM.yy", Locale.getDefault())
+        val dateFromText =if (datePickerFrom.text != null) datePickerFrom.text.toString() else "010120"
+        val dateToText = if (datePickerTo.text != null) datePickerTo.text.toString() else "010150"
 
         lifecycleScope.launch {
             val attendanceMap = withContext(Dispatchers.IO) {
