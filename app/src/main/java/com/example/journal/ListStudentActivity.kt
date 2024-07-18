@@ -13,6 +13,13 @@ import com.example.journal.databinding.ListStudentBinding
 
 class ListStudentActivity : AppCompatActivity() {
     private lateinit var binding: ListStudentBinding
+
+    private fun openActivity(targetActivity: Class<*>) {
+        val intent = Intent(this, targetActivity)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -37,5 +44,18 @@ class ListStudentActivity : AppCompatActivity() {
             val intent = Intent(this, AddStudentActivity::class.java)
             startActivity(intent)
         }
+
+        binding.disciplines.setOnClickListener {
+            openActivity(DisciplinesActivity::class.java)
+        }
+
+        binding.stats.setOnClickListener {
+            openActivity(Stats::class.java)
+        }
+
+        binding.schedule.setOnClickListener {
+            openActivity(SchedulePresentation::class.java)
+        }
+
     }
 }

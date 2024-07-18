@@ -15,6 +15,10 @@ interface DeviceDao{
     @Query ("SELECT GROUP_NUMBER FROM GROUPS LIMIT 1")
     fun selectGroupNumber(): Int
 
+    @Query("SELECT COUNT(*) FROM GROUPS")
+    fun getGroupCount(): Int
+
+
     @Query ("SELECT * FROM GROUPS")
     fun selectAllGroup(): Flow<List<Group>>
     @Insert
@@ -97,5 +101,13 @@ interface DeviceDao{
     @Query("SELECT * FROM ATTENDANCE WHERE ID_PAIR IN (SELECT ID_PAIR FROM SCHEDULE WHERE ID_DISCIPLINE = :disciplineId)")
     suspend fun selectAttendanceByDiscipline(disciplineId:Int): List<Attendance>
 
+    @Query ("DELETE FROM DISCIPLINES")
+    fun deleteAllDisciplines()
+
+    @Query ("DELETE FROM SCHEDULE")
+    fun deleteAllSchedule()
+
+    @Query ("DELETE FROM ATTENDANCE")
+    fun deleteAttendance()
 
 }

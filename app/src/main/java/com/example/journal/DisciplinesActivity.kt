@@ -9,6 +9,13 @@ import com.example.journal.databinding.ActivityDisciplinesBinding
 
 class DisciplinesActivity : AppCompatActivity()  {
 private lateinit var binding: ActivityDisciplinesBinding
+
+    private fun openActivity(targetActivity: Class<*>) {
+        val intent = Intent(this, targetActivity)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+    }
+
 override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     val db = MainDb.getDb(this)
@@ -28,6 +35,18 @@ override fun onCreate(savedInstanceState: Bundle?) {
     binding.editDisciplines.setOnClickListener {
         val intent = Intent(this, AddDisciplinesActivity::class.java)
         startActivity(intent)
+    }
+
+    binding.group.setOnClickListener {
+        openActivity(ListStudentActivity::class.java)
+    }
+
+    binding.stats.setOnClickListener {
+        openActivity(Stats::class.java)
+    }
+
+    binding.schedule.setOnClickListener {
+        openActivity(SchedulePresentation::class.java)
     }
 
 }

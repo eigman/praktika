@@ -20,6 +20,12 @@ class MainActivity : ComponentActivity() {
     private lateinit var builder: AlertDialog.Builder
     private lateinit var scheduleViewModel: ScheduleViewModel
 
+    private fun openActivity(targetActivity: Class<*>) {
+        val intent = Intent(this, targetActivity)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val typesOfPair = arrayOf("ЛР", "ПР", "Л")
@@ -31,78 +37,38 @@ class MainActivity : ComponentActivity() {
         scheduleViewModel = ViewModelProvider(this).get(ScheduleViewModel::class.java)
 
         binding.group.setOnClickListener {
-            val intent = Intent(this, AddGroupActivity::class.java)
-            startActivity(intent)
+            Thread{
+                val db = MainDb.getDb(this)
+                val count = db.getDao().getGroupCount()
+                if (count == 0) {
+                    openActivity(AddGroupActivity::class.java)
+                } else {
+                    openActivity(ListStudentActivity::class.java)
+                }
+            }.start()
         }
 
-//        binding.student.setOnClickListener {
-//            val intent = Intent(this, AddStudentActivity::class.java)
-//            startActivity(intent)
-//        }
+
+        binding.reset.setOnClickListener{
+            Thread{
+                val db = MainDb.getDb(this)
+                db.getDao().deleteAttendance()
+                db.getDao().deleteAllSchedule()
+                db.getDao().deleteAllDisciplines()
+            }.start()
+        }
 
         binding.disciplines.setOnClickListener {
-            val intent = Intent(this, DisciplinesActivity::class.java)
-            startActivity(intent)
+            openActivity(DisciplinesActivity::class.java)
         }
 
         binding.stats.setOnClickListener {
-            val intent = Intent(this, Stats::class.java)
-            startActivity(intent)
+            openActivity(Stats::class.java)
         }
 
-//        binding.attendance.setOnClickListener {
-//            val intent = Intent(this, attendanceActivity::class.java)
-//            startActivity(intent)
-//        }
 
         binding.schedule.setOnClickListener {
-            val intent = Intent(this, SchedulePresentation::class.java)
-            startActivity(intent)
+            openActivity(SchedulePresentation::class.java)
         }
-
-//        binding.addSchedule.setOnClickListener {
-//            val dialogView = layoutInflater.inflate(R.layout.dialog_add_schedule, null)
-//            val editTextPairDate = dialogView.findViewById<EditText>(R.id.editTextDate)
-//
-//            val editSpinnerType: Spinner = dialogView.findViewById(R.id.spinnerType)
-//            val adapterType = ArrayAdapter(this, android.R.layout.simple_spinner_item, typesOfPair)
-//            adapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//            editSpinnerType.adapter = adapterType
-//
-//            val editSpinnerNumber: Spinner = dialogView.findViewById(R.id.spinnerNumber)
-//            val adapterNumber = ArrayAdapter(this, android.R.layout.simple_spinner_item, numbersOfPair)
-//            adapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//            editSpinnerNumber.adapter = adapterNumber
-//
-//            val editSpinnerDiscipline: Spinner = dialogView.findViewById(R.id.spinnerDiscipline)
-//
-//            scheduleViewModel.allDisciplines.observe(this, Observer { disciplineNames ->
-//                val adapterDiscipline = ArrayAdapter(this, android.R.layout.simple_spinner_item, disciplineNames)
-//                adapterDiscipline.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//                editSpinnerDiscipline.adapter = adapterDiscipline
-//            })
-//
-//            builder.setView(dialogView)
-//                .setTitle("Добавьте расписание")
-//                .setCancelable(true)
-//                .setPositiveButton("Ок") { dialogInterface, it ->
-//                    val typeOfPair = editSpinnerType.selectedItem.toString()
-//                    val numberOfPair = editSpinnerNumber.selectedItem.toString()
-//                    val pairDate = editTextPairDate.text.toString()
-//                    val disciplineName = editSpinnerDiscipline.selectedItem.toString()
-//                    scheduleViewModel.getDisciplineIdByName(disciplineName).observe(this, Observer { disciplineId ->
-//                        if (disciplineId != null) {
-//                            val schedule = Schedule(null, disciplineId, pairDate, numberOfPair, typeOfPair)
-//                            scheduleViewModel.insert(schedule)
-//                        }
-//                    })
-//
-//                    dialogInterface.dismiss()
-//                }
-//                .setNegativeButton("Отмена") { dialogInterface, it ->
-//                    dialogInterface.cancel()
-//                }
-//                .show()
-//        }
    }
 }

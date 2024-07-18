@@ -2,23 +2,19 @@ package com.example.journal
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.EditText
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.asLiveData
 import com.example.journal.databinding.ActivityAddGroupBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.concurrent.thread
+import kotlinx.coroutines.withContext
 
 class AddGroupActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddGroupBinding
     private lateinit var builder: AlertDialog.Builder
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val db = MainDb.getDb(this)
@@ -36,26 +32,25 @@ class AddGroupActivity : AppCompatActivity() {
             builder.setView(dialogView)
                 .setTitle("Добавьте группу")
                 .setCancelable(true)
-                .setPositiveButton("Yes") { dialogInterface, it ->
+                .setPositiveButton("Добавить") { dialogInterface, it ->
 
                     val groupNumber = editTextGroupNumber.text.toString().toInt()
                     val numberOfPeople = editTextAmountOfStudents.text.toString().toInt()
 
                     val group = Group(groupNumber, numberOfPeople)
-                    Thread {
+                    CoroutineScope(Dispatchers.IO).launch {
                         db.getDao().insertGroup(group)
-                    }.start()
-
-                    dialogInterface.dismiss()
+                        withContext(Dispatchers.Main) {
+                            val intent = Intent(this@AddGroupActivity, ListStudentActivity::class.java)
+                            startActivity(intent)
+                            dialogInterface.dismiss()
+                        }
+                    }
                 }
-                .setNegativeButton("No") { dialogInterface, it ->
+                .setNegativeButton("Отмена") { dialogInterface, it ->
                     dialogInterface.cancel()
                 }
                 .show()
-        }
-        binding.button3.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
         }
     }
 }

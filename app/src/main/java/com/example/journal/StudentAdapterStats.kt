@@ -39,7 +39,7 @@ class StudentAdapterStats(private var students: List<Student>) : RecyclerView.Ad
 
         fun bind(index: Int, student: Student, attendanceData: Triple<Int, Int, Int>) {
             textViewIndexStats.text = index.toString()
-            textViewStudentStats.text = "${student.SURNAME} ${student.NAME}"
+            textViewStudentStats.text = ". ${student.SURNAME} ${student.NAME}"
             textViewAttendanceStats.text = attendanceData.second.toString() // Посещений
             textViewHoursStats.text = (attendanceData.second * 2).toString() // Часы
             textViewSkipsStats.text = attendanceData.third.toString() // Пропуски

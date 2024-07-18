@@ -1,5 +1,6 @@
 package com.example.journal
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -28,7 +29,15 @@ class Stats : AppCompatActivity() {
     private lateinit var datePickerFrom: EditText
     private lateinit var datePickerTo: EditText
 
+
+    private fun openActivity(targetActivity: Class<*>) {
+        val intent = Intent(this, targetActivity)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         db = MainDb.getDb(this)
 
@@ -42,6 +51,19 @@ class Stats : AppCompatActivity() {
         binding.RecyclerViewStats.apply {
             layoutManager = LinearLayoutManager(this@Stats)
             adapter = studentAdapterStats
+        }
+
+        binding.disciplines.setOnClickListener {
+            openActivity(DisciplinesActivity::class.java)
+        }
+
+
+        binding.schedule.setOnClickListener {
+            openActivity(SchedulePresentation::class.java)
+        }
+
+        binding.group.setOnClickListener {
+            openActivity(ListStudentActivity::class.java)
         }
 
         setupSpinner()
@@ -68,6 +90,9 @@ class Stats : AppCompatActivity() {
             }
         }
     }
+
+
+
 
     private fun setupDatePickers() {
         val textWatcher = object : TextWatcher {

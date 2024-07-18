@@ -9,9 +9,14 @@
     <TextView
         android:id="@+id/textViewIndex"
         android:layout_width="17dp"
-        android:gravity="right"
         android:layout_height="21dp"
+        android:layout_marginTop="1dp"
+        android:fontFamily="@font/roboto_medium"
+        android:gravity="right"
         android:text="1"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -20,10 +25,12 @@
         android:id="@+id/textViewStudent"
         android:layout_width="232dp"
         android:layout_height="21dp"
+        android:fontFamily="@font/roboto_medium"
         android:text="Фамилия Имя"
+        android:textAlignment="viewStart"
+        android:textColor="#000000"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/deleteItemStudent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/textViewIndex"
         app:layout_constraintTop_toTopOf="parent" />
 
