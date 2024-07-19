@@ -192,7 +192,13 @@ class Stats : AppCompatActivity() {
             // Обновляем адаптер в главном потоке
             withContext(Dispatchers.Main) {
                 db.getDao().selectStudents().asLiveData().observe(this@Stats) { list ->
-                    studentAdapterStats.updateList(list, attendanceMap)
+                    val sortedList = list.sortedWith(
+                        compareBy(
+                            { it.SURNAME.lowercase() },
+                            { it.NAME.lowercase() }
+                        )
+                    )
+                    studentAdapterStats.updateList(sortedList, attendanceMap) // Используем отсортированный список
                 }
             }
         }
